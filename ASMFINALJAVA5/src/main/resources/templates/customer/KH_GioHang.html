@@ -282,114 +282,184 @@
         }
     </style>
         <!-- Kết Thúc Navbar -->
+        <style>
+            /* Style của bạn giữ nguyên */
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; min-height: 100vh; }
+            /* ... các style khác ... */
+        </style>
+
+        <form id="cartForm" th:action="@{/customer/checkout}" method="post">
         <div class="container-fluid px-5">
             <h2 style="position: relative;" class="m-3">Giỏ Hàng Của Bạn</h2>
-            <div class="card p-3 m-2">
-                <div class="row align-items-center">
-                    <div class="col-sm-6 d-flex align-items-center">
-                        <div class="form-check me-2">
-                            <input class="form-check-input" type="checkbox" id="sp1">
-                        </div>
-                        <p class="mb-0">Sản Phẩm</p>
+
+            <div class="card d-flex flex-row p-3 m-2 justify-content-between align-items-center fw-bold">
+                <div class="col-sm-6 d-flex align-items-center">
+                    <div class="form-check me-2">
+                        <input class="form-check-input" type="checkbox" id="selectAllCheckbox">
                     </div>
-                    <div class="col-sm-6 d-flex">
-                        <div class="col-sm-3 text-center">Đơn Giá</div>
-                        <div class="col-sm-3 text-center">Số Lượng</div>
-                        <div class="col-sm-3 text-center">Thành Tiền</div>
-                        <div class="col-sm-3 text-center">Thao Tác</div>
-                    </div>
+                    Sản Phẩm
+                </div>
+                <div class="col-sm-6 d-flex align-items-center">
+                    <div class="col-sm-3 text-center">Đơn Giá</div>
+                    <div class="col-sm-3 text-center">Số Lượng</div>
+                    <div class="col-sm-3 text-center">Số Tiền</div>
+                    <div class="col-sm-3 text-center">Thao Tác</div>
                 </div>
             </div>
-            <div class="card p-3 m-2">
+
+            <div th:if="${cartItems == null or cartItems.isEmpty()}" class="card p-5 m-2 text-center">
+                <h3>Giỏ hàng của bạn đang trống.</h3>
+            </div>
+
+            <div th:each="item : ${cartItems}" class="card p-3 m-2">
                 <div class="row align-items-center">
                     <div class="col-sm-6 d-flex align-items-center">
                         <div class="form-check me-2">
-                            <input class="form-check-input" type="checkbox" id="sp1">
+                            <input class="form-check-input item-checkbox" type="checkbox" name="selectedItems"
+                                   th:value="${item.maGH}"
+                                   th:data-price="${item.sanPham.donGia}"
+                                   th:data-quantity="${item.soLuong}">
                         </div>
-                        <div><img th:src="@{/anh/chuot.png}" style="max-width: 75px;"></div>
-                        <p class="mb-0 ms-2">Chuột Gaming Siêu Cấp Vip Pro</p>
-                        <span class="ps-3 text-muted">Màu: Xanh Ngọc Bích</span>
+                        <div><img th:src="@{'/images/' + ${item.sanPham.hinh}}" style="max-width: 75px;"></div>
+                        <p class="mb-0 ms-2" th:text="${item.sanPham.tenSP}"></p>
                     </div>
-                    <div class="col-sm-6 d-flex">
-                        <div class="col-sm-3 text-center">7000000₫</div>
+
+                    <div class="col-sm-6 d-flex align-items-center">
+                        <div class="col-sm-3 text-center" th:text="${#numbers.formatDecimal(item.sanPham.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'"></div>
                         <div class="col-sm-3 text-center">
                             <div class="input-group input-group-sm" style="width: 130px; margin: auto;">
-                                <button class="btn btn-outline-secondary px-3" type="button">-</button>
-                                <input class="form-control text-center" value="1">
-                                <button class="btn btn-outline-secondary px-3" type="button">+</button>
+                                <button class="btn btn-outline-secondary" type="button" 
+                                        th:onclick="'updateQuantity(\'' + ${item.maGH} + '\', \'decrease\')'">-</button>
+                                <input th:id="'quantity-' + ${item.maGH}" class="form-control text-center quantity-input" 
+                                       type="number" th:value="${item.soLuong}" min="1" readonly />
+                                <button class="btn btn-outline-secondary" type="button" 
+                                        th:onclick="'updateQuantity(\'' + ${item.maGH} + '\', \'increase\')'">+</button>
                             </div>
                         </div>
-                        <div class="col-sm-3 text-center">7000000₫</div>
+                        <div class="col-sm-3 text-center" th:id="'subtotal-' + ${item.maGH}"
+                             th:text="${#numbers.formatDecimal(item.sanPham.donGia * item.soLuong, 0, 'COMMA', 0, 'POINT')} + '₫'"></div>
                         <div class="col-sm-3 text-center">
-                            <button class="btn btn-danger">Bỏ Sản Phẩm</button>
+                            <a th:href="@{'/customer/cart/remove/' + ${item.maGH}}" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">Bỏ Sản Phẩm</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card p-3 m-2">
-                <div class="row align-items-center">
-                    <div class="col-sm-6 d-flex align-items-center">
-                        <div class="form-check me-2">
-                            <input class="form-check-input" type="checkbox" id="sp1">
-                        </div>
-                        <div><img th:src="@{/anh/banphimanh.png}"  style="max-width: 75px;"></div>
-                        <p class="mb-0 ms-2">Bàn Phím Văn Phòng Tổng Thống</p>
-                        <span class="ps-3 text-muted">Màu: Đỏ</span>
-                    </div>
-                    <div class="col-sm-6 d-flex">
-                        <div class="col-sm-3 text-center">99000000₫</div>
-                        <div class="col-sm-3 text-center">
-                            <div class="input-group input-group-sm" style="width: 130px; margin: auto;">
-                                <button class="btn btn-outline-secondary px-3" type="button">-</button>
-                                <input class="form-control text-center" value="1">
-                                <button class="btn btn-outline-secondary px-3" type="button">+</button>
-                            </div>
-                        </div>
-                        <div class="col-sm-3 text-center">99000000₫</div>
-                        <div class="col-sm-3 text-center">
-                            <button class="btn btn-danger">Bỏ Sản Phẩm</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card p-3 m-2">
-                <div class="row align-items-center">
-                    <div class="col-sm-6 d-flex align-items-center">
-                        <div class="form-check me-2">
-                            <input class="form-check-input" type="checkbox" id="sp1">
-                        </div>
-                        <div><img th:src="@{/anh/tham.png}"  style="max-width: 75px;"></div>
-                        <p class="mb-0 ms-2">Thảm Trải Sàn Lông</p>
-                        <span class="ps-3 text-muted">Màu: Đen Xám</span>
-                    </div>
-                    <div class="col-sm-6 d-flex">
-                        <div class="col-sm-3 text-center">36000000₫</div>
-                        <div class="col-sm-3 text-center">
-                            <div class="input-group input-group-sm" style="width: 130px; margin: auto;">
-                                <button class="btn btn-outline-secondary px-3" type="button">-</button>
-                                <input class="form-control text-center" value="1">
-                                <button class="btn btn-outline-secondary px-3" type="button">+</button>
-                            </div>
-                        </div>
-                        <div class="col-sm-3 text-center">36000000₫</div>
-                        <div class="col-sm-3 text-center">
-                            <button class="btn btn-danger">Bỏ Sản Phẩm</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card d-flex flex-row p-3 m-2 justify-content-between align-items-center">
-                <button class="btn btn-danger" id="all">Bỏ Sản Phẩm Đã Chọn</button>
+
+            <div class="card d-flex flex-row p-3 m-2 justify-content-between align-items-center" th:if="${not (cartItems == null or cartItems.isEmpty())}">
+                <button type="button" class="btn btn-secondary" id="deselectAllBtn">Bỏ chọn tất cả</button>
                 <div class="d-flex flex-row align-items-center">
                     <div class="me-3">
-                        <span>Tổng Cộng (0 Sản Phẩm): </span>
-                        <span class="fw-bold">0₫</span>
+                        <span>Tổng Cộng (<span id="selectedCount">0</span> Sản Phẩm): </span>
+                        <span class="fw-bold" id="totalPrice">0₫</span>
                     </div>
-                    <!-- Sửa liên kết đặt hàng -->
-                    <a th:href="@{/customer/checkout}" class="btn btn-success">Đặt Hàng</a>
+                    <button type="submit" class="btn btn-success">Đặt Hàng</button>
                 </div>
             </div>
         </div>
+    </form>
+
+    <script>
+        // Hàm cập nhật số lượng bằng AJAX
+        function updateQuantity(maGH, action) {
+            const quantityInput = document.getElementById('quantity-' + maGH);
+            let soLuong = parseInt(quantityInput.value);
+
+            if (action === 'increase') {
+                soLuong++;
+            } else if (action === 'decrease' && soLuong > 1) {
+                soLuong--;
+            } else {
+                return; // Không làm gì nếu giảm dưới 1
+            }
+            
+            // Gửi yêu cầu cập nhật ngầm
+            fetch('/customer/cart/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `maGH=${maGH}&soLuong=${soLuong}`
+            })
+            .then(response => {
+                if (!response.ok) { throw new Error('Cập nhật thất bại'); }
+                return response.text(); // Đọc kết quả trả về
+            })
+            .then(() => {
+                // Cập nhật giao diện mà không cần tải lại trang
+                quantityInput.value = soLuong;
+                
+                const checkbox = document.querySelector(`input[value='${maGH}']`);
+                const price = parseFloat(checkbox.getAttribute('data-price'));
+                checkbox.setAttribute('data-quantity', soLuong);
+
+                const subtotalElement = document.getElementById('subtotal-' + maGH);
+                const newSubtotal = price * soLuong;
+                subtotalElement.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(newSubtotal);
+
+                updateSummary(); // Cập nhật lại tổng tiền
+            })
+            .catch(error => {
+                console.error('Lỗi khi cập nhật giỏ hàng:', error);
+                // Nếu lỗi, tải lại trang để đảm bảo dữ liệu đúng
+                window.location.reload();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+            const selectedCountSpan = document.getElementById('selectedCount');
+            const totalPriceSpan = document.getElementById('totalPrice');
+            const cartForm = document.getElementById('cartForm');
+            const deselectAllBtn = document.getElementById('deselectAllBtn');
+
+            function updateSummary() {
+                let selectedCount = 0;
+                let currentTotalPrice = 0;
+                itemCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedCount++;
+                        const price = parseFloat(checkbox.getAttribute('data-price'));
+                        const quantity = parseInt(checkbox.getAttribute('data-quantity'));
+                        currentTotalPrice += price * quantity;
+                    }
+                });
+                selectedCountSpan.textContent = selectedCount;
+                totalPriceSpan.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(currentTotalPrice);
+            }
+
+            selectAllCheckbox.addEventListener('change', function () {
+                itemCheckboxes.forEach(checkbox => { checkbox.checked = this.checked; });
+                updateSummary();
+            });
+
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    if (!this.checked) {
+                        selectAllCheckbox.checked = false;
+                    } else {
+                        const allChecked = Array.from(itemCheckboxes).every(cb => cb.checked);
+                        selectAllCheckbox.checked = allChecked;
+                    }
+                    updateSummary();
+                });
+            });
+
+            cartForm.addEventListener('submit', function(event) {
+                const anyChecked = Array.from(itemCheckboxes).some(cb => cb.checked);
+                if (!anyChecked) {
+                    alert('Vui lòng chọn ít nhất một sản phẩm để đặt hàng.');
+                    event.preventDefault(); 
+                }
+            });
+            
+            deselectAllBtn.addEventListener('click', function() {
+                itemCheckboxes.forEach(checkbox => { checkbox.checked = false; });
+                selectAllCheckbox.checked = false;
+                updateSummary();
+            });
+
+            updateSummary();
+        });
+    </script>
     </article>
 
 </body>
