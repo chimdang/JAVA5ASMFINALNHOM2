@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{shared/layout :: view('customer', ~{::title}, ~{::article})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pine Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+</head>
+
+<body>
+    <article>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: #fff;
+                /* Bỏ background hình ảnh, dùng nền trắng */
+                min-height: 100vh;
+            }
+
+            .logo img {
+                max-width: 200px;
+            }
+
+            /* Categories */
+            .categories {
+                background: rgba(255, 255, 255, 0.98);
+                padding: 35px 25px 40px 25px;
+                border-radius: 16px;
+                margin-top: 30px;
+                box-shadow: 0 4px 24px rgba(67, 160, 71, 0.13), 0 0 0 4px #ffe06633;
+                border: 2px solid #ffe066;
+            }
+
+            .category-item {
+                text-align: center;
+                cursor: pointer;
+                padding: 18px 0 0 0;
+                transition: transform 0.25s, box-shadow 0.25s;
+                border-radius: 12px;
+                background: transparent;
+                box-shadow: 0 2px 8px rgba(67, 160, 71, 0.07);
+                position: relative;
+            }
+
+            .category-item:hover {
+                transform: translateY(-8px) scale(1.10);
+                box-shadow: 0 8px 24px #ffe06655, 0 2px 8px rgba(67, 160, 71, 0.13);
+                background: #fffbe6;
+                z-index: 2;
+            }
+
+            .category-icon {
+                width: 64px;
+                height: 64px;
+                margin: 0 auto 12px;
+                background: linear-gradient(135deg, #ffe066ee 70%, #43a047 100%);
+                border-radius: 20%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 32px;
+                color: var(--pine-dark);
+                box-shadow: 0 4px 16px #ffe06655, 0 2px 8px rgba(67, 160, 71, 0.13);
+                border: 2px solid #ffd700;
+                transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+            }
+
+            .category-item:hover .category-icon {
+                background: linear-gradient(135deg, #ffd700 50%, #3bb143 100%);
+                color: #fff;
+                box-shadow: 0 8px 32px #a8ddab99;
+                border: 2px solid #43a047;
+            }
+
+            .category-name {
+                font-size: 15px;
+                color: var(--pine-green);
+                font-weight: 600;
+                letter-spacing: 1px;
+                margin-top: 2px;
+                text-shadow: 0 2px 8px #ffe06633;
+            }
+
+            /* Carousel */
+            .carousel-item img {
+                height: 300px;
+                object-fit: cover;
+                border-radius: 8px;
+                box-shadow: 0 2px 12px rgba(255, 224, 102, 0.12);
+            }
+
+            .carousel-control-prev-icon,
+            .carousel-control-next-icon {
+                background-color: var(--pine-green);
+                border-radius: 50%;
+                padding: 20px;
+            }
+
+            /* Side Banners */
+            .side-banner {
+                background: linear-gradient(135deg, var(--pine-primary) 0%, var(--pine-green) 100%);
+                height: 145px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--pine-dark);
+                font-size: 18px;
+                font-weight: bold;
+                box-shadow: 0 2px 12px rgba(255, 224, 102, 0.12);
+            }
+
+            /* Flash Sale */
+            .flash-sale {
+                background: rgba(255, 255, 255, 0.97);
+                padding: 25px;
+                border-radius: 8px;
+                margin-top: 20px;
+                box-shadow: 0 2px 12px rgba(255, 224, 102, 0.09);
+            }
+
+            .flash-title {
+                font-size: 18px;
+                color: var(--pine-green);
+                font-weight: bold;
+            }
+
+            .flash-timer {
+                background: var(--pine-dark);
+                color: white;
+                padding: 8px 15px;
+                border-radius: 8px;
+                font-size: 14px;
+            }
+
+            /* Product Card */
+            .product-card {
+                background: rgba(255, 255, 255, 0.98);
+                border: 1px solid var(--pine-primary);
+                border-radius: 8px;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+                margin-bottom: 15px;
+                box-shadow: 0 2px 8px rgba(255, 224, 102, 0.08);
+            }
+
+            .product-card:hover {
+                transform: translateY(-2px) scale(1.03);
+                box-shadow: 0 4px 16px rgba(67, 160, 71, 0.13);
+            }
+
+            .product-image {
+                width: 100%;
+                height: 200px;
+                overflow: hidden;
+                position: relative;
+                border-radius: 8px 8px 0 0;
+            }
+
+            .product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s;
+            }
+
+            .product-card:hover .product-image img {
+                transform: scale(1.07);
+            }
+
+            .product-badge {
+                position: absolute;
+                top: 5px;
+                left: 5px;
+                background: var(--pine-green);
+                color: var(--pine-primary);
+                padding: 3px 8px;
+                font-size: 12px;
+                border-radius: 4px;
+                font-weight: bold;
+                box-shadow: 0 2px 8px rgba(67, 160, 71, 0.08);
+            }
+
+            .product-info {
+                padding: 12px;
+            }
+
+            .product-name {
+                font-size: 15px;
+                color: var(--pine-dark);
+                height: 40px;
+                overflow: hidden;
+                margin-bottom: 8px;
+                font-weight: 500;
+            }
+
+            .price-current {
+                color: var(--pine-green);
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .price-discount {
+                background: var(--pine-primary);
+                color: var(--pine-dark);
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 12px;
+                margin-left: 5px;
+                font-weight: bold;
+            }
+
+            .product-sold {
+                font-size: 12px;
+                color: var(--pine-dark);
+                margin-top: 8px;
+            }
+
+            /* Section Title */
+            .section-title {
+                font-size: 26px;
+                color: var(--pine-green);
+                font-weight: bold;
+                text-align: center;
+                margin-bottom: 32px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                border-bottom: 2px solid #ffe066;
+                display: inline-block;
+                padding-bottom: 6px;
+            }
+
+            /* Footer */
+            .footer {
+                background: rgba(255, 255, 255, 0.97);
+                margin-top: 40px;
+                padding: 40px 0 20px;
+                border-top: 4px solid var(--pine-primary);
+                border-radius: 8px 8px 0 0;
+            }
+
+            .footer h5 {
+                font-size: 14px;
+                color: var(--pine-dark);
+                margin-bottom: 15px;
+                text-transform: uppercase;
+            }
+
+            .footer ul {
+                list-style: none;
+                padding: 0;
+            }
+
+            .footer li {
+                margin-bottom: 10px;
+            }
+
+            .footer a {
+                color: var(--pine-green);
+                text-decoration: none;
+                font-size: 13px;
+            }
+
+            .footer a:hover {
+                color: var(--pine-dark);
+            }
+
+            .footer-bottom {
+                text-align: center;
+                padding-top: 20px;
+                border-top: 1px solid var(--pine-primary);
+                color: var(--pine-dark);
+                font-size: 12px;
+            }
+        </style>
+        <!-- Main Content -->
+        <div class="container">
+            <!-- Categories -->
+            <div class="categories">
+                <h2 class="section-title">Danh Mục</h2>
+                <div class="row g-2">
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-bag"></i></div>
+                            <div class="category-name">Thời Trang Nam</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-phone"></i></div>
+                            <div class="category-name">Điện Thoại</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-laptop"></i></div>
+                            <div class="category-name">Thiết Bị Điện Tử</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-brush"></i></div>
+                            <div class="category-name">Làm Đẹp</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-house"></i></div>
+                            <div class="category-name">Nhà Cửa</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-watch"></i></div>
+                            <div class="category-name">Đồng Hồ</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-bag-heart"></i></div>
+                            <div class="category-name">Thời Trang Nữ</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-universal-access"></i></div>
+                            <div class="category-name">Giày Dép</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-controller"></i></div>
+                            <div class="category-name">Giải Trí</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="category-item">
+                            <div class="category-icon"><i class="bi bi-trophy"></i></div>
+                            <div class="category-name">Thể Thao</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner Carousel -->
+            <div class="row mt-4 g-3">
+                <div class="col-lg-8">
+                    <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0"
+                                class="active"></button>
+                            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
+                            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
+                            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="3"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&h=300&fit=crop"
+                                    class="d-block w-100" alt="Banner 1">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?w=800&h=300&fit=crop"
+                                    class="d-block w-100" alt="Banner 2">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=300&fit=crop"
+                                    class="d-block w-100" alt="Banner 3">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&h=300&fit=crop"
+                                    class="d-block w-100" alt="Banner 4">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="side-banner mb-3">MIỄN PHÍ SHIP</div>
+                    <div class="side-banner">VOUCHER 100K</div>
+                </div>
+            </div>
+
+            <!-- Flash Sale -->
+            <div class="flash-sale">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="flash-title mb-0"><i class="bi bi-lightning-fill"></i> FLASH SALE</h2>
+                    <div class="flash-timer"><i class="bi bi-clock"></i> Kết thúc trong 02:45:30</div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <a th:href="@{/customer/detailProduct}"><img
+                                        src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop"
+                                        alt="Áo thun"></a>
+                                <span class="product-badge">-50%</span>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Áo thun nam nữ form rộng tay lỡ</div>
+                                <div>
+                                    <span class="price-current">₫99.000</span>
+                                    <span class="price-discount">-50%</span>
+                                </div>
+                                <div class="product-sold">Đã bán 1.2k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <a th:href="@{/customer/detailProduct}"><img
+                                        src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop"
+                                        alt="Giày sneaker"></a>
+                                <span class="product-badge">-45%</span>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Giày sneaker thể thao nam nữ</div>
+                                <div>
+                                    <span class="price-current">₫199.000</span>
+                                    <span class="price-discount">-45%</span>
+                                </div>
+                                <div class="product-sold">Đã bán 856</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <a th:href="@{/customer/detailProduct}"><img
+                                        src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=400&h=400&fit=crop"
+                                        alt="Túi xách"></a>
+                                <span class="product-badge">-60%</span>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Túi xách nữ thời trang cao cấp</div>
+                                <div>
+                                    <span class="price-current">₫149.000</span>
+                                    <span class="price-discount">-60%</span>
+                                </div>
+                                <div class="product-sold">Đã bán 2.3k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=400&h=400&fit=crop"
+                                    alt="Ốp điện thoại">
+                                <span class="product-badge">-70%</span>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Ốp lưng điện thoại silicon</div>
+                                <div>
+                                    <span class="price-current">₫29.000</span>
+                                    <span class="price-discount">-70%</span>
+                                </div>
+                                <div class="product-sold">Đã bán 5.6k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop"
+                                    alt="Đồng hồ">
+                                <span class="product-badge">-55%</span>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Đồng hồ thông minh smartwatch</div>
+                                <div>
+                                    <span class="price-current">₫299.000</span>
+                                    <span class="price-discount">-55%</span>
+                                </div>
+                                <div class="product-sold">Đã bán 678</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop"
+                                    alt="Tai nghe">
+                                <span class="product-badge">-65%</span>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Tai nghe bluetooth không dây</div>
+                                <div>
+                                    <span class="price-current">₫159.000</span>
+                                    <span class="price-discount">-65%</span>
+                                </div>
+                                <div class="product-sold">Đã bán 3.4k</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Discover -->
+            <div class="flash-sale mt-4">
+                <h2 class="section-title">Gợi Ý Hôm Nay</h2>
+                <div class="row g-3">
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop"
+                                    alt="Balo">
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Balo laptop thời trang công sở</div>
+                                <div>
+                                    <span class="price-current">₫189.000</span>
+                                </div>
+                                <div class="product-sold">Đã bán 432</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&h=400&fit=crop"
+                                    alt="Quần jean">
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Quần jean nam nữ ống rộng</div>
+                                <div>
+                                    <span class="price-current">₫259.000</span>
+                                </div>
+                                <div class="product-sold">Đã bán 1.8k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop"
+                                    alt="Kem chống nắng">
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Kem chống nắng SPF50+</div>
+                                <div>
+                                    <span class="price-current">₫129.000</span>
+                                </div>
+                                <div class="product-sold">Đã bán 921</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop"
+                                    alt="Chuột gaming">
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Chuột không dây gaming</div>
+                                <div>
+                                    <span class="price-current">₫99.000</span>
+                                </div>
+                                <div class="product-sold">Đã bán 567</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1585515320310-259814833e62?w=400&h=400&fit=crop"
+                                    alt="Nồi chiên">
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Nồi chiên không dầu 5L</div>
+                                <div>
+                                    <span class="price-current">₫799.000</span>
+                                </div>
+                                <div class="product-sold">Đã bán 234</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop"
+                                    alt="Bình giữ nhiệt">
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">Bình giữ nhiệt 500ml</div>
+                                <div>
+                                    <span class="price-current">₫69.000</span>
+                                </div>
+                                <div class="product-sold">Đã bán 2.1k</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- Kết thúc phần nội dung chính (container) -->
+    </article>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

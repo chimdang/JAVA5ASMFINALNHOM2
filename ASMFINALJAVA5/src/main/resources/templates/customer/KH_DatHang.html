@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{shared/layout :: view('customer', ~{::title}, ~{::article})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <article>
+        <style>
+            #logo {
+                max-width: 200px
+            }
+
+            .dropdown:hover .dropdown-menu {
+                display: block;
+                margin-top: 0;
+            }
+
+            /* Riêng Tài khoản: ép căn phải */
+            #tk:hover .dropdown-menu {
+                right: 0;
+                left: auto;
+            }
+
+            .sticky-card {
+                position: fixed;
+                left: 50%;
+                right: 0;
+                bottom: 30px;
+                transform: translateX(-50%);
+                border-radius: 0;
+                width: 1246px;
+                margin: 0;
+            }
+
+            #all {
+                max-width: 200px;
+            }
+        </style>
+        <div class="container mt-3 px-5">
+            <div class="card p-3 m-2">
+                <span class="fw-semibold fs-5">Địa điểm nhận hàng</span>
+                <div class="row mt-3 ">
+                    <div class="col-sm-9">
+                        <div class="d-flex">
+                            <select class="form-select" aria-label="Default select example">
+                                <option selected>Nguyễn Văn A , 1680 Nguyễn Văn Lượng, 0903753468</option>
+                                <option value="1">Nguyễn Văn A, Trường Đại Học Quốc Gia, 0903753468</option>
+                                <option value="2">Lê Thị B, 1680 Nguyễn Văn Lượng, 0908362942</option>
+                                <option value="3">Hoang Thi D, 160 Nguyễn Văn Linh, 0942768953</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <button class="btn btn-primary mx-2" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop">Thêm /
+                            Sửa</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-3 m-2">
+                <div class="row align-items-center">
+                    <div class="col-sm-6 d-flex align-items-center">
+                        <p class="mb-0">Sản Phẩm</p>
+                    </div>
+                    <div class="col-sm-6 d-flex">
+                        <div class="col-sm-4 text-center">Đơn Giá</div>
+                        <div class="col-sm-4 text-center">Số Lượng</div>
+                        <div class="col-sm-4 text-center">Thành Tiền</div>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="row align-items-center">
+                    <div class="col-sm-6 d-flex align-items-center">
+                        <div><img th:src="@{/anh/tham.png}" style="max-width: 75px;"></div>
+                        <p class="mb-0 ms-2">Thảm Trải Sàn Lông Vũ</p>
+                        <span class="ps-3 text-muted">Màu: Đen Tuyền</span>
+                    </div>
+                    <div class="col-sm-6 d-flex">
+                        <div class="col-sm-4 text-center">36000000₫</div>
+                        <div class="col-sm-4 text-center">1</div>
+                        <div class="col-sm-4 text-center">36000000₫</div>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="me-3 ms-auto">
+                    <span>Tổng tiền (1 Sản Phẩm): </span>
+                    <span class="fw-bold">36000000₫</span>
+                </div>
+                <button class="btn btn-success ms-auto m-3">Đặt Ngay</button>
+            </div>
+        </div>
+        <!-- Modal địa chỉ -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Thêm Địa Chỉ</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <span>Tên Người Nhận:</span>
+                        <input class="form-control my-3" placeholder="Nhập tên người nhận">
+                        <span>Địa điểm nhận:</span>
+                        <input class="form-control my-3" placeholder="Nhập địa chỉ nhận hàng">
+                        <span>Số Điện Thoại:</span>
+                        <input class="form-control my-3" type="text" placeholder="Nhập số điện thoại người nhận">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">STT</th>
+                                    <th scope="col">Tên</th>
+                                    <th scope="col">Địa Chỉ</th>
+                                    <th scope="col">SĐT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Nguyễn Văn A</td>
+                                    <td>1680 Nguyễn Văn Lượng</td>
+                                    <td>0903753468</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Nguyễn Văn C</td>
+                                    <td>1680 Nguyễn Văn Linh</td>
+                                    <td>0903753678</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>Nguyễn Hoàng D</td>
+                                    <td>1680 Nguyễn Văn Lượng</td>
+                                    <td>0903753468</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-success">Sửa</button>
+                        <button type="button" class="btn btn-primary">Thêm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+</body>
+</html>

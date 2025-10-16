@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{shared/layout :: view('customer', ~{::title}, ~{::article})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sản phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+</head>
+
+<body>
+    <article>
+        <style>
+            :root {
+                --shopee-primary: #ee4d2d;
+                --shopee-secondary: #fb5533;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: #f5f5f5;
+            }
+
+            /* Top Header */
+            .top-header {
+                background: linear-gradient(0, var(--shopee-secondary), var(--shopee-primary));
+                color: white;
+                padding: 8px 0;
+                font-size: 13px;
+            }
+
+            .top-header a {
+                color: white;
+                text-decoration: none;
+                margin: 0 10px;
+            }
+
+            .top-header a:hover {
+                opacity: 0.8;
+            }
+
+            /* Product Detail */
+            .product-detail {
+                background: white;
+                padding: 20px;
+                border-radius: 4px;
+                margin-top: 20px;
+            }
+
+            .product-images {
+                position: sticky;
+                top: 20px;
+            }
+
+            .main-image {
+                width: 100%;
+                height: 450px;
+                object-fit: cover;
+                border: 1px solid #f0f0f0;
+                border-radius: 4px;
+                cursor: zoom-in;
+            }
+
+            .thumbnail-images {
+                display: flex;
+                gap: 10px;
+                margin-top: 15px;
+                overflow-x: auto;
+            }
+
+            .thumbnail {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                border: 2px solid transparent;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .thumbnail:hover,
+            .thumbnail.active {
+                border-color: var(--shopee-primary);
+            }
+
+            .product-title {
+                font-size: 20px;
+                color: rgba(0, 0, 0, .87);
+                line-height: 1.5;
+                margin-bottom: 15px;
+            }
+
+            .product-rating {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid #f0f0f0;
+                margin-bottom: 15px;
+            }
+
+            .rating-stars {
+                color: var(--shopee-primary);
+            }
+
+            .rating-number {
+                text-decoration: underline;
+                color: rgba(0, 0, 0, .87);
+            }
+
+            .price-section {
+                background: #fafafa;
+                padding: 20px;
+                margin: 20px 0;
+                border-radius: 4px;
+            }
+
+            .original-price {
+                color: #929292;
+                text-decoration: line-through;
+                font-size: 16px;
+                margin-right: 10px;
+            }
+
+            .current-price {
+                color: var(--shopee-primary);
+                font-size: 32px;
+                font-weight: 500;
+            }
+
+            .discount-badge {
+                background: var(--shopee-primary);
+                color: white;
+                padding: 4px 8px;
+                border-radius: 2px;
+                font-size: 14px;
+                margin-left: 10px;
+            }
+
+            .product-options {
+                margin: 25px 0;
+            }
+
+            .option-label {
+                color: rgba(0, 0, 0, .54);
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+
+            .option-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .option-btn {
+                padding: 10px 20px;
+                border: 1px solid #d9d9d9;
+                background: white;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .option-btn:hover {
+                border-color: var(--shopee-primary);
+                color: var(--shopee-primary);
+            }
+
+            .option-btn.active {
+                border-color: var(--shopee-primary);
+                color: var(--shopee-primary);
+                background: #fff5f2;
+            }
+
+            .quantity-selector {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin: 25px 0;
+            }
+
+            .quantity-controls {
+                display: flex;
+                align-items: center;
+                border: 1px solid #d9d9d9;
+                border-radius: 4px;
+            }
+
+            .quantity-btn {
+                width: 40px;
+                height: 40px;
+                border: none;
+                background: white;
+                cursor: pointer;
+                font-size: 18px;
+            }
+
+            .quantity-btn:hover {
+                background: #f5f5f5;
+            }
+
+            .quantity-input {
+                width: 60px;
+                height: 40px;
+                border: none;
+                border-left: 1px solid #d9d9d9;
+                border-right: 1px solid #d9d9d9;
+                text-align: center;
+                font-size: 16px;
+            }
+
+            .stock-info {
+                color: rgba(0, 0, 0, .54);
+                font-size: 14px;
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: 15px;
+                margin: 30px 0;
+            }
+
+            .btn-add-cart {
+                flex: 1;
+                padding: 15px;
+                border: 1px solid var(--shopee-primary);
+                background: rgba(238, 77, 45, 0.1);
+                color: var(--shopee-primary);
+                border-radius: 4px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .btn-add-cart:hover {
+                background: rgba(238, 77, 45, 0.2);
+            }
+
+            .btn-buy-now {
+                flex: 1;
+                padding: 15px;
+                border: none;
+                background: var(--shopee-primary);
+                color: white;
+                border-radius: 4px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .btn-buy-now:hover {
+                background: var(--shopee-secondary);
+            }
+
+            .product-info-section {
+                background: white;
+                padding: 25px;
+                border-radius: 4px;
+                margin-top: 20px;
+            }
+
+            .section-title {
+                font-size: 18px;
+                color: rgba(0, 0, 0, .87);
+                padding-bottom: 15px;
+                border-bottom: 1px solid #f0f0f0;
+                margin-bottom: 20px;
+            }
+
+            .info-row {
+                display: flex;
+                padding: 15px 0;
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .info-label {
+                width: 200px;
+                color: rgba(0, 0, 0, .54);
+                font-size: 14px;
+            }
+
+            .info-value {
+                flex: 1;
+                color: rgba(0, 0, 0, .87);
+                font-size: 14px;
+            }
+
+            .description-content {
+                line-height: 1.8;
+                color: rgba(0, 0, 0, .87);
+                white-space: pre-line;
+            }
+
+            .shop-info {
+                background: white;
+                padding: 20px;
+                border-radius: 4px;
+                margin-top: 20px;
+            }
+
+            .shop-header {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .shop-avatar {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                border: 1px solid #f0f0f0;
+            }
+
+            .shop-stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+                margin-top: 15px;
+            }
+
+            .stat-item {
+                text-align: center;
+                padding: 10px;
+                background: #fafafa;
+                border-radius: 4px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+                color: var(--shopee-primary);
+                font-weight: 500;
+            }
+
+            .stat-label {
+                font-size: 12px;
+                color: rgba(0, 0, 0, .54);
+                margin-top: 5px;
+            }
+
+            .btn-view-shop {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid var(--shopee-primary);
+                background: white;
+                color: var(--shopee-primary);
+                border-radius: 4px;
+                margin-top: 15px;
+                cursor: pointer;
+            }
+
+            .btn-view-shop:hover {
+                background: rgba(238, 77, 45, 0.1);
+            }
+
+            .reviews-section {
+                background: white;
+                padding: 25px;
+                border-radius: 4px;
+                margin-top: 20px;
+            }
+
+            .review-item {
+                padding: 20px 0;
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .review-header {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+
+            .reviewer-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: #f0f0f0;
+            }
+
+            .review-content {
+                color: rgba(0, 0, 0, .87);
+                line-height: 1.6;
+                margin: 10px 0;
+            }
+
+            .review-images {
+                display: flex;
+                gap: 10px;
+                margin-top: 10px;
+                flex-wrap: wrap;
+            }
+
+            .review-img {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+        </style>
+        <!-- Product Detail -->
+        <div class="container">
+            <div class="product-detail">
+                <div class="row">
+                    <!-- Product Images -->
+                    <div class="col-lg-5">
+                        <div class="product-images">
+                            <img id="mainImage" class="main-image" src="" alt="Product">
+                            <div class="thumbnail-images" id="thumbnailContainer">
+                                <!-- Thumbnails sẽ được load từ database -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="col-lg-7">
+                        <h1 class="product-title" id="productTitle">Tên sản phẩm</h1>
+
+                        <div class="product-rating">
+                            <div class="rating-stars" id="ratingStars">
+                                <!-- Rating stars sẽ được load từ database -->
+                            </div>
+                            <span class="rating-number" id="ratingNumber">0</span>
+                            <span class="text-muted">|</span>
+                            <span id="reviewCount">0</span> <span class="text-muted">Đánh Giá</span>
+                            <span class="text-muted">|</span>
+                            <span id="soldCount">0</span> <span class="text-muted">Đã Bán</span>
+                        </div>
+
+                        <div class="price-section">
+                            <span class="original-price" id="originalPrice">₫0</span>
+                            <span class="current-price" id="currentPrice">₫0</span>
+                            <span class="discount-badge" id="discountBadge">0% GIẢM</span>
+                        </div>
+
+                        <!-- Color Options -->
+                        <div class="product-options" id="colorOptions" style="display: none;">
+                            <div class="option-label">Màu Sắc</div>
+                            <div class="option-buttons" id="colorButtons">
+                                <!-- Color options sẽ được load từ database -->
+                            </div>
+                        </div>
+
+                        <!-- Size Options -->
+                        <div class="product-options" id="sizeOptions" style="display: none;">
+                            <div class="option-label">Kích Thước</div>
+                            <div class="option-buttons" id="sizeButtons">
+                                <!-- Size options sẽ được load từ database -->
+                            </div>
+                        </div>
+
+                        <!-- Quantity Selector -->
+                        <div class="quantity-selector">
+                            <div class="option-label">Số Lượng</div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                                <input type="number" class="quantity-input" id="quantity" value="1" min="1" max="999">
+                                <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                            </div>
+                            <span class="stock-info"><span id="stockCount">0</span> sản phẩm có sẵn</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button class="btn-add-cart" onclick="addToCart()">
+                                <i class="bi bi-cart-plus"></i> Thêm Vào Giỏ Hàng
+                            </button>
+                            <button class="btn-buy-now" onclick="buyNow()">
+                                Mua Ngay
+                            </button>
+                        </div>
+
+                        <!-- Shop Info -->
+                        <div class="shop-info">
+                            <div class="shop-header">
+                                <img class="shop-avatar" id="shopAvatar" src="" alt="Shop">
+                                <div>
+                                    <h5 id="shopName">Tên Shop</h5>
+                                    <small class="text-muted">Hoạt động <span id="shopActivity">0</span></small>
+                                </div>
+                            </div>
+                            <div class="shop-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value" id="shopProducts">0</div>
+                                    <div class="stat-label">Sản Phẩm</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="shopRating">0</div>
+                                    <div class="stat-label">Đánh Giá</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="shopResponseRate">0%</div>
+                                    <div class="stat-label">Phản Hồi</div>
+                                </div>
+                            </div>
+                            <button class="btn-view-shop" onclick="viewShop()">
+                                <i class="bi bi-shop"></i> Xem Shop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Specifications -->
+            <div class="product-info-section">
+                <h2 class="section-title">Thông Số Sản Phẩm</h2>
+                <div id="specifications">
+                    <!-- Specifications sẽ được load từ database -->
+                </div>
+            </div>
+
+            <!-- Product Description -->
+            <div class="product-info-section">
+                <h2 class="section-title">Mô Tả Sản Phẩm</h2>
+                <div class="description-content" id="productDescription">
+                    <!-- Description sẽ được load từ database -->
+                </div>
+            </div>
+
+            <!-- Reviews -->
+            <div class="reviews-section">
+                <h2 class="section-title">Đánh Giá Sản Phẩm</h2>
+                <div id="reviewsContainer">
+                    <!-- Reviews sẽ được load từ database -->
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

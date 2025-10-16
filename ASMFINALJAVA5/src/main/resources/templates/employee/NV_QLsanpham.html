@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{shared/layout :: view('employee', ~{::title}, ~{::article})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản Lý Sản Phẩm</title>
+</head>
+
+<body>
+    <article>
+    <style>
+        
+		body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7f7f9;
+            /* nền trắng xám */
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .stats-mini {
+            background: linear-gradient(135deg, #ed1616, #e9540a);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-mini h4 {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .stats-mini p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .col-md-3:nth-child(1) .stats-mini {
+		    background: linear-gradient(135deg, #ed1616, #e9540a);
+		}
+		.col-md-3:nth-child(2) .stats-mini {
+		    background: linear-gradient(135deg, #11998e, #38ef7d);
+		}
+		.col-md-3:nth-child(3) .stats-mini {
+		    background: linear-gradient(135deg, #f093fb, #f5576c);
+		}
+		.col-md-3:nth-child(4) .stats-mini {
+		    background: linear-gradient(135deg, #667eea, #764ba2);
+		}
+
+
+        .content-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-3px);
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .product-info h6 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .product-sku {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            color: #ee4d2d;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .product-stock {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .badge-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-low-stock {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .btn-icon {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .image-upload-area:hover {
+            border-color: #ee4d2d;
+            background: #fff5f3;
+        }
+
+        .image-upload-area i {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        .preview-images {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .preview-image {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #e0e0e0;
+        }
+
+        .preview-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-image .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .pagination .page-link {
+            color: #ee4d2d;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            margin: 0 3px;
+        }
+
+        .pagination .page-link:hover {
+            background: #ee4d2d;
+            color: white;
+            border-color: #ee4d2d;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: #ee4d2d;
+            border-color: #ee4d2d;
+        }
+		.page-container {
+		    padding: 30px;
+		    background: #f7f7f9;
+		    min-height: 100vh;
+		}
+		
+        @media (max-width: 768px) {
+            .product-card {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
+    </style>
+        <div class="page-container">
+            <!-- Stats Mini Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="stats-mini">
+                        <h4>456</h4>
+                        <p>Tổng sản phẩm</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-mini">
+                        <h4>423</h4>
+                        <p>Đang hoạt động</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-mini">
+                        <h4>33</h4>
+                        <p>Hết hàng</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-mini">
+                        <h4>28</h4>
+                        <p>Sắp hết hàng</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Card -->
+            <div class="content-card">
+                <!-- Header with Add Button -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="page-title">Danh sách sản phẩm</h5>
+                        <p class="page-subtitle">Quản lý và chỉnh sửa thông tin sản phẩm</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <i class="bi bi-plus-circle me-2"></i>Thêm sản phẩm mới
+                    </button>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="Tìm kiếm theo tên, SKU...">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option value="">Tất cả danh mục</option>
+                                <option value="1">Thời trang nam</option>
+                                <option value="2">Thời trang nữ</option>
+                                <option value="3">Điện tử</option>
+                                <option value="4">Phụ kiện</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select">
+                                <option value="">Trạng thái</option>
+                                <option value="active">Đang bán</option>
+                                <option value="inactive">Ngừng bán</option>
+                                <option value="low">Sắp hết hàng</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary flex-fill">
+                                    <i class="bi bi-search"></i> Tìm kiếm
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products List -->
+                <div class="products-list">
+                    <!-- Product 1 -->
+                    <div class="product-card d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3 flex-grow-1">
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop"
+                                alt="Product" class="product-image">
+                            <div class="product-info">
+                                <h6>Đồng hồ thông minh Xiaomi Mi Band 7</h6>
+                                <p class="product-sku"><i class="bi bi-upc"></i> SKU: WATCH-001</p>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <span class="product-price">₫299.000</span>
+                                    <span class="product-stock">| Tồn kho: <strong>245</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge-status badge-active">Đang bán</span>
+                            <div class="action-buttons">
+                                <button class="btn btn-outline-primary btn-icon" title="Xem chi tiết">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-icon" title="Chỉnh sửa">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-icon" title="Xóa">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="product-card d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3 flex-grow-1">
+                            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100&h=100&fit=crop"
+                                alt="Product" class="product-image">
+                            <div class="product-info">
+                                <h6>Giày sneaker Nike Air Force 1</h6>
+                                <p class="product-sku"><i class="bi bi-upc"></i> SKU: SHOES-002</p>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <span class="product-price">₫1.499.000</span>
+                                    <span class="product-stock">| Tồn kho: <strong>89</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge-status badge-active">Đang bán</span>
+                            <div class="action-buttons">
+                                <button class="btn btn-outline-primary btn-icon" title="Xem chi tiết">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-icon" title="Chỉnh sửa">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-icon" title="Xóa">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 3 -->
+                    <div class="product-card d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3 flex-grow-1">
+                            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop"
+                                alt="Product" class="product-image">
+                            <div class="product-info">
+                                <h6>Áo thun nam basic cotton 100%</h6>
+                                <p class="product-sku"><i class="bi bi-upc"></i> SKU: SHIRT-003</p>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <span class="product-price">₫99.000</span>
+                                    <span class="product-stock">| Tồn kho: <strong>8</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge-status badge-low-stock">Sắp hết</span>
+                            <div class="action-buttons">
+                                <button class="btn btn-outline-primary btn-icon" title="Xem chi tiết">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-icon" title="Chỉnh sửa">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-icon" title="Xóa">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 4 -->
+                    <div class="product-card d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3 flex-grow-1">
+                            <img src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=100&h=100&fit=crop"
+                                alt="Product" class="product-image">
+                            <div class="product-info">
+                                <h6>Túi xách nữ da cao cấp</h6>
+                                <p class="product-sku"><i class="bi bi-upc"></i> SKU: BAG-004</p>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <span class="product-price">₫549.000</span>
+                                    <span class="product-stock">| Tồn kho: <strong>0</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge-status badge-inactive">Hết hàng</span>
+                            <div class="action-buttons">
+                                <button class="btn btn-outline-primary btn-icon" title="Xem chi tiết">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-icon" title="Chỉnh sửa">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-icon" title="Xóa">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Product pagination" class="mt-4">
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Add Product Modal -->
+	    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+	        aria-hidden="true">
+	        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h5 class="modal-title" id="addProductModalLabel">
+	                        <i class="bi bi-plus-circle me-2"></i>Thêm sản phẩm mới
+	                    </h5>
+	                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	                </div>
+	                <div class="modal-body">
+	                    <form id="addProductForm">
+	                        <!-- Basic Information -->
+	                        <h6 class="mb-3"><i class="bi bi-info-circle me-2"></i>Thông tin cơ bản</h6>
+	                        <div class="row mb-3">
+	                            <div class="col-md-6">
+	                                <div class="">
+	                                    <label for="productName" class="form-label required-field">Tên sản phẩm</label>
+	                                    <input type="text" class="form-control" id="productName"
+	                                        placeholder="Nhập tên sản phẩm" required>
+	                                </div>
+	                            </div>
+	
+	                            <div class="col-md-6">
+	                                <div class="">
+	                                    <label for="productSKU" class="form-label required-field">Phân loại</label>
+	                                    <input type="text" class="form-control" id="productSKU" placeholder="VD: PROD-001"
+	                                        required>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="row mb-3">
+	                            <label for="productCategory" class="form-label required-field">Danh mục</label>
+	                            <div class="col-md-6">
+	                                
+	                                <select class="form-select mb-2" id="productCategory" required>
+	                                    <option value="">Chọn danh mục</option>
+	                                    <option value="1">Thời trang nam</option>
+	                                    <option value="2">Thời trang nữ</option>
+	                                    <option value="3">Điện tử</option>
+	                                    <option value="4">Phụ kiện</option>
+	                                    <option value="5">Đồ gia dụng</option>
+	                                    <option value="6">Mỹ phẩm</option>
+	                                </select>
+	                            </div>
+	                            <div class="col-md-6">
+	                                <!-- Thêm danh mục mới -->
+	                                <div class="input-group">
+	                                    <input type="text" class="form-control" id="newCategory"
+	                                        placeholder="Tạo danh mục mới...">
+	                                    <button type="button" class="btn btn-outline-primary" id="addCategoryBtn">
+	                                        <i class="bi bi-plus-circle"></i>
+	                                    </button>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="mb-3">
+	                            <label for="productDescription" class="form-label">Mô tả sản phẩm</label>
+	                            <textarea class="form-control" id="productDescription" rows="3"
+	                                placeholder="Nhập mô tả chi tiết về sản phẩm"></textarea>
+	                        </div>
+	
+	                        <!-- Pricing & Inventory -->
+	                        <h6 class="mb-3 mt-4"><i class="bi bi-cash-stack me-2"></i>Giá & Tồn kho</h6>
+	
+	                        <div class="row mb-3">
+	                            <div class="col-md-6">
+	                                <label for="productPrice" class="form-label required-field">Giá bán (₫)</label>
+	                                <input type="number" class="form-control" id="productPrice" placeholder="0" min="0"
+	                                    required>
+	                            </div>
+	
+	                            <div class="col-md-6">
+	                                <label for="productStock" class="form-label required-field">Tồn kho</label>
+	                                <input type="number" class="form-control" id="productStock" placeholder="0" min="0"
+	                                    required>
+	                            </div>
+	                        </div>
+	
+	                        <!-- Product Images -->
+	                        <h6 class="mb-3 mt-4"><i class="bi bi-image me-2"></i>Hình ảnh sản phẩm</h6>
+	
+	                        <div class="image-upload-area" id="imageUploadArea">
+	                            <i class="bi bi-cloud-upload"></i>
+	                            <p class="mb-2"><strong>Kéo thả hoặc nhấp để tải ảnh lên</strong></p>
+	                            <p class="text-muted small mb-0">Hỗ trợ: JPG, PNG, JPEG (Tối đa 5 ảnh)</p>
+	                            <input type="file" id="productImages" accept="image/*" multiple hidden>
+	                        </div>
+	
+	                        <div class="preview-images" id="previewImages"></div>
+	
+	                        <!-- Status -->
+	                        <h6 class="mb-3 mt-4"><i class="bi bi-toggle-on me-2"></i>Trạng thái</h6>
+	
+	                        <div class="mb-3">
+	                            <div class="form-check form-switch">
+	                                <input class="form-check-input" type="checkbox" id="productStatus" checked>
+	                                <label class="form-check-label" for="productStatus">
+	                                    Đang bán
+	                                </label>
+	                            </div>
+	                        </div>
+	
+	                        <div class="mb-3">
+	                            <div class="form-check form-switch">
+	                                <input class="form-check-input" type="checkbox" id="productFeatured">
+	                                <label class="form-check-label" for="productFeatured">
+	                                    Hết hàng
+	                                </label>
+	                            </div>
+	                        </div>
+	                    </form>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+	                        <i class="bi bi-x-circle me-2"></i>Hủy
+	                    </button>
+	                    <button type="button" class="btn btn-primary" id="saveProductBtn">
+	                        <i class="bi bi-check-circle me-2"></i>Lưu sản phẩm
+	                    </button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+    </article>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let uploadedImages = [];
+
+        const imageUploadArea = document.getElementById('imageUploadArea');
+        const productImages = document.getElementById('productImages');
+        const previewImages = document.getElementById('previewImages');
+
+        imageUploadArea.addEventListener('click', () => {
+            productImages.click();
+        });
+
+        productImages.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (uploadedImages.length + files.length > 5) {
+                alert('Chỉ được tải lên tối đa 5 ảnh!');
+                return;
+            }
+
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        uploadedImages.push(e.target.result);
+                        renderPreviewImages();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function renderPreviewImages() {
+            previewImages.innerHTML = uploadedImages.map((img, index) => `
+                <div class="preview-image">
+                    <img src="${img}" alt="Preview">
+                    <button class="remove-image" onclick="removeImage(${index})">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            renderPreviewImages();
+        }
+
+        document.getElementById('saveProductBtn').addEventListener('click', () => {
+            const form = document.getElementById('addProductForm');
+            if (form.checkValidity()) {
+                alert('Sản phẩm đã được thêm thành công!');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+                modal.hide();
+                form.reset();
+                uploadedImages = [];
+                renderPreviewImages();
+            } else {
+                form.reportValidity();
+            }
+        });
+    </script>
+</body>
+</html>

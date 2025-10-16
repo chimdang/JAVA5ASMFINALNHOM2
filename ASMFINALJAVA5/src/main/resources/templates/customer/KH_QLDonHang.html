@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{shared/layout :: view('customer', ~{::title}, ~{::article})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn hàng của bạn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <!-- Main Header -->
+    <article>
+        <style>
+            #logo {
+                max-width: 200px
+            }
+
+            .dropdown:hover .dropdown-menu {
+                display: block;
+                margin-top: 0;
+            }
+
+            /* Riêng Tài khoản: ép căn phải */
+            #tk:hover .dropdown-menu {
+                right: 0;
+                left: auto;
+            }
+
+            .sticky-card {
+                position: fixed;
+                left: 50%;
+                right: 0;
+                bottom: 30px;
+                transform: translateX(-50%);
+                border-radius: 0;
+                width: 1246px;
+                margin: 0;
+            }
+
+            #all {
+                max-width: 200px;
+            }
+        </style>
+        <div class="container-fluid px-5">
+            <h2 style="position: relative;" class="m-3">Đơn Hàng Của Bạn</h2>
+            <div class="card p-3 m-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Chuột Gaming Siêu Cấp Vip Pro</span>
+                    <span class="text-success">Đã Nhận</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Thành Tiền</span>
+                    <span class="text-muted">7000000đ</span>
+                </div>
+                <a th:href="@{/customer/order/detail}" class="btn btn-outline-warning ms-auto my-3">Xem chi tiết</a>
+            </div>
+            <div class="card p-3 m-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Thảm Trải Sàn Lông Vũ</span>
+                    <span class="text-success">Đang Giao</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Thành Tiền</span>
+                    <span class="text-muted">36000000₫</span>
+                </div>
+                <a th:href="@{/customer/order/detail}" class="btn btn-outline-warning ms-auto my-3">Xem chi tiết</a>
+
+            </div>
+            <div class="card p-3 m-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Bàn Phím Văn Phòng Tổng Thống</span>
+                    <span class="text-warning">Đang Chờ Duyệt</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Thành Tiền</span>
+                    <span class="text-muted">99000000đ</span>
+                </div>
+
+                <a th:href="@{/customer/order/detail}" class="btn btn-outline-warning ms-auto my-3">Xem chi tiết</a>
+            </div>
+        </div>
+    </article>
+
+</body>
+
+
+</html>
