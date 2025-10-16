@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="header">
+<body>
+    <header th:if="${#httpServletRequest.requestURI.contains('/customer/')}">
+        <div th:replace="~{fragments/KH_Navbar :: navbar}"></div>
+    </header>
+    
+    <header th:if="${#httpServletRequest.requestURI.contains('/employee/')}">
+        <div th:replace="~{fragments/NV_Sidebar :: sidebar}"></div>
+    </header>
+</body>
+</html>
