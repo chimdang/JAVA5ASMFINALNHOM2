@@ -103,43 +103,45 @@
     </style>
         <div class="page-container">
 
-            <!-- TAB -->
+            <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${message}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <div class="container mt-4">
 			    <ul class="nav nav-tabs mt-3" role="tablist">
 			        <li class="nav-item" role="presentation">
-			            <a class="nav-link active" data-bs-toggle="tab" href="#user-list" role="tab" aria-selected="true">
+			            <a class="nav-link" th:classappend="${activeTab != 'edit' ? 'active' : ''}" data-bs-toggle="tab" href="#user-list" role="tab" aria-selected="true">
 			                <i class="bi bi-people-fill me-2"></i>Danh sách Users
 			            </a>
 			        </li>
 			        <li class="nav-item" role="presentation">
-			            <a class="nav-link" data-bs-toggle="tab" href="#user-edit" role="tab" aria-selected="false">
+			            <a class="nav-link" th:classappend="${activeTab == 'edit' ? 'active' : ''}" data-bs-toggle="tab" href="#user-edit" role="tab" aria-selected="false">
 			                <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa User
 			            </a>
 			        </li>
                 </ul>
 
                 <div class="tab-content p-3 border border-top-0">
-                    <!-- TAB USER LIST -->
-                    <div id="user-list" class="tab-pane fade show active">
-                        <form method="get" action="user" class="row g-2 mb-3">
+                    <div id="user-list" class="tab-pane fade" th:classappend="${activeTab != 'edit' ? 'show active' : ''}">
+                        
+                        <form th:action="@{/employee/users}" method="get" class="row g-2 mb-3">
                             <div class="col-auto">
-                                <select name="roleFilter" class="form-select">
+                                <select name="roleFilter" class="form-select" onchange="this.form.submit()">
                                     <option value="">All</option>
-                                    <option value="NV" ${param.roleFilter=='NV' ? 'selected' : '' }>Nhân viên</option>
-                                    <option value="KH" ${param.roleFilter=='KH' ? 'selected' : '' }>Khách hàng</option>
+                                    <option value="NV" th:selected="${roleFilter == 'NV'}">Nhân viên</option>
+                                    <option value="KH" th:selected="${roleFilter == 'KH'}">Khách hàng</option>
                                 </select>
                             </div>
-
                             <div class="col-auto">
-                                <input type="text" name="keyword" placeholder="Search..." value="" class="form-control">
+                                <input type="text" name="keyword" placeholder="Tìm theo email..." th:value="${keyword}" class="form-control">
                             </div>
-
                             <div class="col-auto">
                                 <button type="submit" class="btn btn-success">Tìm kiếm</button>
                             </div>
                         </form>
 
-                        <table class="table table-bordered">
+                        <table class="table table-bordered table-hover">
                             <thead class="table-dark">
                                 <tr>
                                     <th>Vai trò</th>
@@ -150,152 +152,80 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><span class="badge bg-primary">Nhân viên</span></td>
-                                    <td>admin@gmail.com</td>
-                                    <td>Đồng Phan Phát Đạt</td>
-                                    <td>-</td>
+                                <tr th:each="user : ${userList}" 
+                                    th:with="nhanVien=${nhanVienDAO.findByUser(user).orElse(null)}, khachHang=${khachHangDAO.findByUser(user).orElse(null)}">
                                     <td>
-                                        <a class="btn btn-sm btn-outline-primary me-1" href="">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                        <button class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Delete user này?')">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-
+                                        <span th:if="${nhanVien != null}"
+          th:text="${nhanVien.vaitro == 'Admin' ? 'Admin' : 'Nhân viên'}"
+          th:classappend="${nhanVien.vaitro == 'Admin' ? 'bg-danger' : 'bg-primary'}"
+          class="badge">
+    </span>
+                                        <span th:if="${khachHang != null}" class="badge bg-success">Khách hàng</span>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-success">Khách hàng</span></td>
-                                    <td>user1@gmail.com</td>
-                                    <td>Nguyễn Duy Nguyên Minh</td>
-                                    <td>0987654321</td>
+                                    <td th:text="${user.mail}"></td>
                                     <td>
-                                        <a class="btn btn-sm btn-outline-primary me-1" href="">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                        <button class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Delete user này?')">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
+                                        <span th:if="${nhanVien != null}" th:text="${nhanVien.tenNV}"></span>
+                                        <span th:if="${khachHang != null}" th:text="${khachHang.tenKH}"></span>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-success">Khách hàng</span></td>
-                                    <td>customer2@gmail.com</td>
-                                    <td>Đặng Trần Hoàng Anh</td>
-                                    <td>0901234567</td>
+                                    <td th:text="${khachHang != null ? khachHang.sdt : '-'}"></td>
                                     <td>
-                                        <a class="btn btn-sm btn-outline-primary me-1" href="">
+                                        <a class="btn btn-sm btn-outline-primary me-1" th:href="@{/employee/users(editId=${user.userID})}">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <button class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Delete user này?')">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
+                                        <form th:action="@{/employee/users/delete}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa người dùng này?')">
+                                            <input type="hidden" name="userID" th:value="${user.userID}" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <nav class="mt-2 d-flex justify-content-end">
-                            <ul class="pagination mb-0">
-                                <!-- First Page -->
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#">
-                                        <i class="fa-solid fa-backward-step"></i>
-                                    </a>
-                                </li>
+                        </div>
 
-                                <!-- Previous Page -->
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#">
-                                        <i class="fa-solid fa-backward"></i>
-                                    </a>
-                                </li>
-
-                                <!-- Page Numbers -->
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                <li class="page-item"><a class="page-link" href="#">5</a></li>
-
-                                <!-- Next Page -->
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fa-solid fa-forward"></i>
-                                    </a>
-                                </li>
-
-                                <!-- Last Page -->
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fa-solid fa-forward-step"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-
-
-                    </div>
-
-                    <!-- TAB USER EDIT -->
-                    <div id="user-edit" class="tab-pane fade">
-                        <form action="user/save" method="post" class="form-section bg-light p-3 rounded">
+                    <div id="user-edit" class="tab-pane fade" th:classappend="${activeTab == 'edit' ? 'show active' : ''}">
+                        
+                        <form method="post" class="form-section bg-light p-3 rounded" th:object="${userEdit}">
+                            
+                            <input type="hidden" th:field="*{userID}" />
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Email</label>
-                                    <input type="email" name="email" class="form-control" placeholder="Nhập email..."
-                                        value="">
+                                    <input type="email" th:field="*{mail}" class="form-control" placeholder="Nhập email..." required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Password</label>
-                                    <input type="password" name="password" class="form-control"
-                                        placeholder="Nhập mật khẩu..." value="">
+                                    <input type="password" name="pass" class="form-control" th:placeholder="*{userID == null ? 'Nhập mật khẩu...' : 'Để trống nếu không đổi'}">
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Họ và tên</label>
-                                    <input type="text" name="fullname" class="form-control" placeholder="Nhập họ tên..."
-                                        value="">
+                                    <input type="text" name="fullname" class="form-control" placeholder="Nhập họ tên..." th:value="${nhanVienEdit.tenNV != null ? nhanVienEdit.tenNV : khachHangEdit.tenKH}">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="sdt-field">
                                     <label class="form-label fw-bold">Số điện thoại</label>
-                                    <input type="text" name="phone" class="form-control" placeholder="Nhập SĐT..."
-                                        value="">
+                                    <input type="text" name="sdt" class="form-control" placeholder="Nhập SĐT..." th:value="${khachHangEdit.sdt}">
                                 </div>
                             </div>
-
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Vai trò</label><br>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" id="role-nv" name="role" value="NV" class="form-check-input">
+                                    <input type="radio" id="role-nv" name="role" value="NV" class="form-check-input" th:checked="${nhanVienEdit.maNV != null}" th:disabled="*{userID != null}">
                                     <label class="form-check-label" for="role-nv">Nhân viên</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" id="role-kh" name="role" value="KH" class="form-check-input">
+                                    <input type="radio" id="role-kh" name="role" value="KH" class="form-check-input" th:checked="${khachHangEdit.maKH != null}" th:disabled="*{userID != null}">
                                     <label class="form-check-label" for="role-kh">Khách hàng</label>
                                 </div>
                             </div>
-
                             <div class="text-end">
-                                <button formaction="#" class="btn btn-success">
-                                    <i class="fas fa-plus me-1"></i>Create
-                                </button>
-                                <button formaction="#" class="btn btn-warning">
-                                    <i class="fas fa-save me-1"></i>Update
-                                </button>
-                                <button formaction="#" class="btn btn-danger"
-                                    onclick="return confirm('Bạn có chắc muốn xóa user này?')">
-                                    <i class="fas fa-trash me-1"></i>Delete
-                                </button>
-                                <button formaction="#" class="btn btn-secondary">
-                                    <i class="fas fa-redo me-1"></i>Reset
-                                </button>
+                                <button th:formaction="@{/employee/users/create}" class="btn btn-success"><i class="fas fa-plus me-1"></i>Create</button>
+                                <button th:formaction="@{/employee/users/update}" class="btn btn-warning"><i class="fas fa-save me-1"></i>Update</button>
+                                <button th:formaction="@{/employee/users/delete}" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa user này?')"><i class="fas fa-trash me-1"></i>Delete</button>
+                                <a th:href="@{/employee/users}" class="btn btn-secondary"><i class="fas fa-redo me-1"></i>Reset</a>
                             </div>
                         </form>
                     </div>

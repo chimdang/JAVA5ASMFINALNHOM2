@@ -80,13 +80,69 @@
         #logo {
             max-width: 200px;
         }
-
-        
     </style>
 </head>
 
 <body>
 	<div th:fragment="KH_Navbar">
+    <!-- 🔹 Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><strong>Đổi mật khẩu</strong></h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>Email</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                            <div>
+                                <label>Mật khẩu mới</label>
+                                <input type="password" class="form-control" name="newPassword" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>Mật khẩu hiện tại</label>
+                                <input type="password" class="form-control" name="currentPassword" required>
+                            </div>
+                            <div>
+                                <label>Xác nhận mật khẩu mới</label>
+                                <input type="password" class="form-control" name="confirmPassword" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Xác nhận</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 Logout Modal -->
+    <div class="modal fade" id="logoffModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đăng xuất</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn đăng xuất không?
+                </div>
+                <div class="modal-footer">
+				    <a th:href="@{/auth/login}" class="btn btn-danger">Đăng xuất</a>
+				    <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+				</div>
+            </div>
+        </div>
+    </div>
 
     <!-- 🔹 Navbar -->
     <div class="main-header">
@@ -121,60 +177,44 @@
                                 style="width:32px; height:32px; background:linear-gradient(135deg,#ffe066,#43a047); border-radius:50%;">
                                 <i class="bi bi-person-fill" style="color:#43a047; font-size:22px;"></i>
                             </span>
-                            Tài khoản
+                            Tài Khoản
                             <i class="bi bi-caret-down-fill ms-2" style="font-size:14px;"></i>
                         </a>
                       	<ul class="dropdown-menu dropdown-menu-end">
-						    <li th:if="${session.user == null}">
-						        <a class="dropdown-item" th:href="@{/auth/login}">Đăng nhập</a>
-						    </li>
-						    <li th:if="${session.user == null}">
-						        <a class="dropdown-item" th:href="@{/auth/login}">Đăng ký</a>
-						    </li>
-						    <li th:if="${session.user != null}">
-						        <span class="dropdown-item-text">
-						            Xin chào, 
-						            <span class="fw-bold" id="userLastName">
-						   				<span th:text="${session.userName}">User</span>
-				     				</span>
-						        </span>
-						    </li>
-						    <li th:if="${session.user != null}"><hr class="dropdown-divider"></li>
-						    <li th:if="${session.user != null}">
-						        <a class="dropdown-item" th:href="@{/customer/profile}">Quản Lý Tài Khoản</a>
-						    </li>
-						    <li th:if="${session.user != null}">
-						        <a class="dropdown-item" th:href="@{/customer/orders}">Đơn Hàng Của Bạn</a>
-						    </li>
-						    <li th:if="${session.user != null}"><hr class="dropdown-divider"></li>
-						    <li th:if="${session.user != null}">
-						        <a class="dropdown-item text-danger" th:href="@{/auth/logout}">Đăng Xuất</a>
-						    </li>
+						    <li><a class="dropdown-item" th:href="@{/auth/login}">Đăng nhập</a></li>
+						    <li><a class="dropdown-item" th:href="@{/auth/login}">Đăng ký</a></li>
+						    <li><hr class="dropdown-divider"></li>
+						    <li><a class="dropdown-item" th:href="@{/customer/profile}">Quản Lý Tài Khoản</a></li>
+						    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Đổi Mật Khẩu</a></li>
+						    <li><a class="dropdown-item" th:href="@{/customer/orders}">Đơn Hàng Của Bạn</a></li>
+						    <li><hr class="dropdown-divider"></li>
+						    <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoffModal">Đăng Xuất</a></li>
 						</ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-	    document.addEventListener('DOMContentLoaded', function() {
-	        function getLastName(fullName) {
-	            if (!fullName || fullName.trim() === '' || fullName === 'User') {
-	                return fullName;
-	            }
-	            const names = fullName.trim().split(/\s+/);
-	            return names[names.length - 1];
-	        }
-	
-	        // Xử lý tên cuối cùng
-	        const lastNameElement = document.getElementById('userLastName');
-	        if (lastNameElement) {
-	            const fullName = lastNameElement.textContent.trim();
-	            const lastName = getLastName(fullName);
-	            lastNameElement.textContent = lastName;
-	        }
-	    });
-	</script>
 </body>
+<style>
+    /* #search{
+    max-width: 100%;
+    width:800px;
+} */
+    #logo {
+        max-width: 200px
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
+
+    /* Riêng Tài khoản: ép căn phải */
+    #tk:hover .dropdown-menu {
+        right: 0;
+        left: auto;
+    }
+</style>
 
 </html>

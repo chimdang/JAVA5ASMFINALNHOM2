@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{shared/layout :: view('employee', ~{::title}, ~{::article})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Nhập Kho</title>
+</head>
+
+<body>
+    <article>
+    <style>
+        /* Style riêng cho trang Nhập Kho */
+        .import-container {
+             /* đẩy toàn bộ nội dung qua phải */
+            padding: 20px;
+            min-height: 100vh;
+            background: #f9f9f9;
+        }
+
+        .card {
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: none;
+        }
+
+        .card h3 {
+            color: #1e293b;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .nav-tabs .nav-link {
+            color: #666;
+            font-weight: 500;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 12px 24px;
+            transition: all 0.3s;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #4f46e5;
+            border-color: transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #4f46e5;
+            background: transparent;
+            border-color: #4f46e5;
+        }
+
+        .tab-content {
+            padding: 25px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-select, .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 15px;
+            transition: all 0.3s;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .table {
+            margin-top: 20px;
+        }
+
+        .table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .table thead th {
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .table tbody tr:hover {
+            background: #f8fafc;
+            transform: scale(1.01);
+        }
+
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+		.page-container {
+		    padding: 30px;
+		    background: #f7f7f9;
+		    min-height: 100vh;
+		}
+		
+        @media (max-width: 768px) {
+            .import-container {
+                padding: 15px;
+            }
+
+            .form-select, .form-control {
+                min-width: 100%;
+            }
+        }
+    </style>
+        <div class="import-container">
+            <div class="card p-4">
+                <h3 class="text-center">
+                    <i class="bi bi-box-seam me-2"></i>
+                    Quản lý nhập kho
+                </h3>
+                
+                <ul class="nav nav-tabs" id="nhapKhoTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="nhapkho-tab" data-bs-toggle="tab" 
+                            data-bs-target="#nhapkho" type="button" role="tab" 
+                            aria-controls="nhapkho" aria-selected="true">
+                            <i class="bi bi-plus-circle me-2"></i>Nhập kho
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="lichsu-tab" data-bs-toggle="tab" 
+                            data-bs-target="#lichsu" type="button" role="tab" 
+                            aria-controls="lichsu" aria-selected="false">
+                            <i class="bi bi-clock-history me-2"></i>Lịch sử nhập kho
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="nhapKhoTabContent">
+                    <!-- Tab Nhập Kho -->
+                    <div class="tab-pane fade show active" id="nhapkho" role="tabpanel" 
+                        aria-labelledby="nhapkho-tab">
+                        <form id="form-nhapkho" class="row g-3 align-items-end">
+                            <div class="col-md-6">
+                                <label for="sp" class="form-label">
+                                    <i class="bi bi-box me-1"></i>Sản phẩm
+                                </label>
+                                <select id="sp" class="form-select" required>
+                                    <option value="">-- Chọn sản phẩm --</option>
+                                    <option value="SP01">SP01 - Chuột Gaming Logitech</option>
+                                    <option value="SP02">SP02 - Bàn Phím Cơ Corsair</option>
+                                    <option value="SP03">SP03 - Tai Nghe HyperX</option>
+                                    <option value="SP04">SP04 - Màn Hình Dell 27 inch</option>
+                                    <option value="SP05">SP05 - Laptop ASUS ROG</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="soluong" class="form-label">
+                                    <i class="bi bi-123 me-1"></i>Số lượng
+                                </label>
+                                <input type="number" min="1" class="form-control" id="soluong" 
+                                    placeholder="Nhập số lượng" required>
+                            </div>
+                            <div class="col-md-2 d-grid">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle me-2"></i>Nhập
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tab Lịch Sử -->
+                    <div class="tab-pane fade" id="lichsu" role="tabpanel" aria-labelledby="lichsu-tab">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle" id="table-nhapkho">
+                                <thead>
+                                    <tr>
+                                        <th><i class="bi bi-hash me-2"></i>Mã nhập kho</th>
+                                        <th><i class="bi bi-upc me-2"></i>Mã sản phẩm</th>
+                                        <th><i class="bi bi-box-seam me-2"></i>Tên sản phẩm</th>
+                                        <th><i class="bi bi-123 me-2"></i>Số lượng</th>
+                                        <th><i class="bi bi-calendar-event me-2"></i>Ngày nhập</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>NK001</strong></td>
+                                        <td>SP01</td>
+                                        <td>Chuột Gaming Logitech</td>
+                                        <td><span class="badge bg-primary">50</span></td>
+                                        <td>20/10/2025</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>NK002</strong></td>
+                                        <td>SP02</td>
+                                        <td>Bàn Phím Cơ Corsair</td>
+                                        <td><span class="badge bg-primary">30</span></td>
+                                        <td>21/10/2025</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>NK003</strong></td>
+                                        <td>SP03</td>
+                                        <td>Tai Nghe HyperX</td>
+                                        <td><span class="badge bg-primary">25</span></td>
+                                        <td>22/10/2025</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>NK004</strong></td>
+                                        <td>SP04</td>
+                                        <td>Màn Hình Dell 27 inch</td>
+                                        <td><span class="badge bg-primary">15</span></td>
+                                        <td>23/10/2025</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>NK005</strong></td>
+                                        <td>SP05</td>
+                                        <td>Laptop ASUS ROG</td>
+                                        <td><span class="badge bg-primary">10</span></td>
+                                        <td>24/10/2025</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Xử lý form nhập kho
+        document.getElementById('form-nhapkho').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const sp = document.getElementById('sp');
+            const soluong = document.getElementById('soluong');
+            
+            if (sp.value && soluong.value) {
+                alert(`Đã nhập ${soluong.value} sản phẩm ${sp.options[sp.selectedIndex].text}`);
+                
+                // Reset form
+                sp.value = '';
+                soluong.value = '';
+                
+                // Có thể thêm logic thêm dữ liệu vào bảng lịch sử ở đây
+            }
+        });
+    </script>
+</body>
+</html>

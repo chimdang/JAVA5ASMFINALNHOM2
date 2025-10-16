@@ -67,24 +67,25 @@
             <article th:replace="${content}">CONTENT</article>
         </main>
     </div>
-	 <!-- 🔹 Logout Modal -->
-    <div class="modal fade" id="logoffModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Đăng xuất</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn đăng xuất không?
-                </div>
-                <div class="modal-footer">
-				    <a th:href="@{/auth/logout}" class="btn btn-danger">Đăng xuất</a>
+	<!-- 🔹 Logout Modal -->
+	<div class="modal fade" id="logoffModal" tabindex="-1" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h5 class="modal-title">Đăng xuất</h5>
+	                <button class="btn-close" data-bs-dismiss="modal"></button>
+	            </div>
+	            <div class="modal-body">
+	                Bạn có chắc chắn muốn đăng xuất không?
+	            </div>
+	            <!-- Logout Modal -->
+				<div class="modal-footer">
+				    <a th:href="@{/auth/login}" class="btn btn-danger">Đăng xuất</a>
 				    <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
 				</div>
-            </div>
-        </div>
-    </div>
+	        </div>
+	    </div>
+	</div>
 
 
     <!-- Customer Layout -->
