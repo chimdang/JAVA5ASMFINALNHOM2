@@ -13,6 +13,6 @@ public class MainController {
 
     @GetMapping("/admin")
     public String admin() {
-        return "redirect:/employee/index";
+        return "redirect:/employee/products";
     }
 }
