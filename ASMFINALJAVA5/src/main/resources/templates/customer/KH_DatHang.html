@@ -63,7 +63,7 @@
                 </div>
                 <div th:each="addr, iter : ${addresses}">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="maDC" th:id="'addr' + ${addr.maDC}" th:value="${addr.maDC}" th:checked="${addr.macDinh or iter.index == 0}">
+                        <input class="form-check-input" type="radio" name="maDC" th:id="'addr' + ${addr.maDC}" th:value="${addr.maDC}" th:checked="${(addr.macDinh ?: false) or iter.index == 0}">
                         <label class="form-check-label" th:for="'addr' + ${addr.maDC}">
                             <strong th:text="${addr.tenNN} + ' | ' + ${addr.sdt}"></strong>
                             <p class="mb-0" th:text="${addr.diemGiao}"></p>

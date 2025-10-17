@@ -30,6 +30,62 @@
         margin: 0;
     }
 
+    .sidebar-header .user-info {
+        margin-top: 15px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar-header .user-greeting {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .sidebar-header .user-greeting i {
+        font-size: 14px;
+        color: #ffeb3b;
+    }
+
+    .sidebar-header .user-role-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .badge-admin {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        box-shadow: 0 2px 4px rgba(238, 90, 36, 0.3);
+    }
+
+    .badge-employee {
+        background: linear-gradient(135deg, #48cae4, #0096c7);
+        box-shadow: 0 2px 4px rgba(0, 150, 199, 0.3);
+    }
+
+    .badge-customer {
+        background: linear-gradient(135deg, #51cf66, #2b8a3e);
+        box-shadow: 0 2px 4px rgba(43, 138, 62, 0.3);
+    }
+
+    .sidebar-header .user-email {
+        font-size: 11px;
+        opacity: 0.8;
+        margin-top: 5px;
+        word-break: break-all;
+    }
+
     .sidebar-menu {
         list-style: none;
         padding: 0;
@@ -46,19 +102,25 @@
         padding: 15px 20px;
         color: white;
         text-decoration: none;
-        transition: background 0.3s;
+        transition: all 0.3s;
     }
 
     .sidebar-menu a:hover,
     .sidebar-menu a.active {
         background: rgba(255, 255, 255, 0.2);
         border-left: 4px solid white;
+        transform: translateX(5px);
     }
 
     .sidebar-menu i {
         font-size: 20px;
         margin-right: 15px;
         width: 25px;
+        transition: transform 0.3s;
+    }
+
+    .sidebar-menu a:hover i {
+        transform: scale(1.1);
     }
 
     /* Main Content khi có sidebar */
@@ -108,45 +170,100 @@
 <!-- sidebar.html -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h3>My Shop Admin</h3>
+        <h3>PINE Shop</h3>
         <small>Quản lý cửa hàng của bạn</small>
+        
+        <!-- Hiển thị thông tin user -->
+        <div class="user-info" th:if="${session.userName}">
+            <div class="user-greeting">
+                <i class="fa-solid fa-user me-2"></i>
+                <span>Xin chào, 
+                    <span class="fw-bold" id="userLastName">
+						<span th:text="${session.userName}">User</span>
+				     </span>
+                </span>
+            </div>
+            
+            <!-- Badge Role với màu sắc -->
+            <div th:if="${session.userRole}">
+                <span th:switch="${session.userRole}" class="user-role-badge">
+                    <span th:case="'Admin'" class="badge-admin">
+                        <i class="bi bi-star-fill me-1"></i>Admin
+                    </span>
+                    <span th:case="'Nhân viên'" class="badge-employee">
+                        <i class="bi bi-person-gear me-1"></i>Nhân viên
+                    </span>
+                	<span th:case="*" class="badge-employee" th:text="${session.userRole}"></span>
+                </span>
+            </div>
+            
+            <div class="user-email" th:text="${session.userMail}"></div>
+        </div>
+        
+        <div class="user-info" th:unless="${session.userName}">
+            <div class="user-greeting">
+                <i class="bi bi-person-x"></i>
+                <span>Chưa đăng nhập</span>
+            </div>
+        </div>
     </div>
+    
     <ul class="sidebar-menu">
-	    <li>
-	        <a th:href="@{/employee/dashboard}">
-	            <i class="bi bi-speedometer2"></i>
-	            <span>Thống kê</span>
-	        </a>
-	    </li>
-	    <li>
-	        <a th:href="@{/employee/products}">
-	            <i class="bi bi-box-seam"></i>
-	            <span>Quản lý sản phẩm</span>
-	        </a>
-	    </li>
-	    <li>
-	        <a th:href="@{/employee/users}">
-	            <i class="fa-regular fa-circle-user"></i>
-	            <span>Quản lý user</span>
-	        </a>
-	    </li>
-	    <li>
-	        <a th:href="@{/employee/orders}">
-	            <i class="bi bi-cart-check"></i>
-	            <span>Đơn hàng</span>
-	        </a>
-	    </li>
-	    <li>
-	        <a th:href="@{/employee/import}">
-	           <i class="fa-solid fa-inbox"></i>
-	            <span>Nhập Kho</span>
-	        </a>
-	    </li>
-	    <li>
-	        <a href="#" data-bs-toggle="modal" data-bs-target="#logoffModal">
-	            <i class="bi bi-box-arrow-right"></i>
-	            <span>Đăng xuất</span>
-	        </a>
-	    </li>
-	</ul>
+        <li>
+            <a th:href="@{/employee/dashboard}">
+                <i class="bi bi-speedometer2"></i>
+                <span>Thống kê</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/employee/products}">
+                <i class="bi bi-box-seam"></i>
+                <span>Quản lý sản phẩm</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/employee/users}">
+                <i class="fa-regular fa-circle-user"></i>
+                <span>Quản lý user</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/employee/orders}">
+                <i class="bi bi-cart-check"></i>
+                <span>Đơn hàng</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/employee/import}">
+               <i class="fa-solid fa-inbox"></i>
+                <span>Nhập Kho</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#logoffModal">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Đăng xuất</span>
+            </a>
+        </li>
+    </ul>
 </div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    function getLastName(fullName) {
+	        if (!fullName || fullName.trim() === '' || fullName === 'User') {
+	            return fullName;
+	        }
+	        const names = fullName.trim().split(/\s+/);
+	        return names[names.length - 1];
+	    }
+	
+	    // Xử lý tên cuối cùng
+	    const lastNameElement = document.getElementById('userLastName');
+	    if (lastNameElement) {
+	        const fullName = lastNameElement.textContent.trim();
+	        const lastName = getLastName(fullName);
+	        lastNameElement.textContent = lastName;
+	    }
+	});
+</script>
