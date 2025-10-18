@@ -19,4 +19,5 @@ public class DiaChi {
     private Boolean macDinh;
     private String sdt;
     private String diemGiao;
+    private Boolean trangThaiXoa = false;
 }

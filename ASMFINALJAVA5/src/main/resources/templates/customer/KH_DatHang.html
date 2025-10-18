@@ -46,11 +46,9 @@
                 max-width: 200px;
             }
         </style>
-        <form th:action="@{/customer/place-order}" method="post">
-        <div class="container-fluid px-5">
-            <h2 class="m-3">Thanh Toán</h2>
-            
+        <div class="container mt-3 px-5">
             <div class="card p-3 m-2">
+<<<<<<< HEAD
                 <div class="d-flex justify-content-between align-items-center">
                     <h5><i class="bi bi-geo-alt-fill text-danger"></i> Địa Chỉ Nhận Hàng</h5>
                     <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addressModal">
@@ -171,59 +169,114 @@
                                    <label class="form-check-label">Đặt làm địa chỉ mặc định</label>
                                </div>
                            </div>
+=======
+                <span class="fw-semibold fs-5">Địa điểm nhận hàng</span>
+                <div class="row mt-3 ">
+                    <div class="col-sm-9">
+                        <div class="d-flex">
+                            <select class="form-select" aria-label="Default select example">
+                                <option selected>Nguyễn Văn A , 1680 Nguyễn Văn Lượng, 0903753468</option>
+                                <option value="1">Nguyễn Văn A, Trường Đại Học Quốc Gia, 0903753468</option>
+                                <option value="2">Lê Thị B, 1680 Nguyễn Văn Lượng, 0908362942</option>
+                                <option value="3">Hoang Thi D, 160 Nguyễn Văn Linh, 0942768953</option>
+                            </select>
+>>>>>>> ad28158ee08d6639ccd65ee6486cf4ef6ffa0291
                         </div>
-                        <button type="submit" class="btn btn-success mt-3">Cập nhật</button>
-                        <button type="button" class="btn btn-secondary mt-3" onclick="showAddForm()">Hủy</button>
-                   </form>
-
-                    <table class="table table-hover mt-3">
-                        <tbody>
-                            <tr th:each="addr : ${addresses}">
-                                <td>
-                                    <strong th:text="${addr.tenNN} + ' | ' + ${addr.sdt}"></strong>
-                                    <p class="mb-0" th:text="${addr.diemGiao}"></p>
-                                    <span th:if="${addr.macDinh}" class="badge bg-success">Mặc định</span>
-                                </td>
-                                <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-warning" th:onclick="editAddress([[${addr.maDC}]])">Sửa</button>
-                                    <a th:href="@{'/customer/address/delete/' + ${addr.maDC}}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn xóa địa chỉ này?')">Xóa</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    </div>
+                    <div class="col-sm-3">
+                        <button class="btn btn-primary mx-2" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop">Thêm /
+                            Sửa</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-3 m-2">
+                <div class="row align-items-center">
+                    <div class="col-sm-6 d-flex align-items-center">
+                        <p class="mb-0">Sản Phẩm</p>
+                    </div>
+                    <div class="col-sm-6 d-flex">
+                        <div class="col-sm-4 text-center">Đơn Giá</div>
+                        <div class="col-sm-4 text-center">Số Lượng</div>
+                        <div class="col-sm-4 text-center">Thành Tiền</div>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="row align-items-center">
+                    <div class="col-sm-6 d-flex align-items-center">
+                        <div><img th:src="@{/anh/tham.png}" style="max-width: 75px;"></div>
+                        <p class="mb-0 ms-2">Thảm Trải Sàn Lông Vũ</p>
+                        <span class="ps-3 text-muted">Màu: Đen Tuyền</span>
+                    </div>
+                    <div class="col-sm-6 d-flex">
+                        <div class="col-sm-4 text-center">36000000₫</div>
+                        <div class="col-sm-4 text-center">1</div>
+                        <div class="col-sm-4 text-center">36000000₫</div>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="me-3 ms-auto">
+                    <span>Tổng tiền (1 Sản Phẩm): </span>
+                    <span class="fw-bold">36000000₫</span>
+                </div>
+                <button class="btn btn-success ms-auto m-3">Đặt Ngay</button>
+            </div>
+        </div>
+        <!-- Modal địa chỉ -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Thêm Địa Chỉ</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <span>Tên Người Nhận:</span>
+                        <input class="form-control my-3" placeholder="Nhập tên người nhận">
+                        <span>Địa điểm nhận:</span>
+                        <input class="form-control my-3" placeholder="Nhập địa chỉ nhận hàng">
+                        <span>Số Điện Thoại:</span>
+                        <input class="form-control my-3" type="text" placeholder="Nhập số điện thoại người nhận">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">STT</th>
+                                    <th scope="col">Tên</th>
+                                    <th scope="col">Địa Chỉ</th>
+                                    <th scope="col">SĐT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Nguyễn Văn A</td>
+                                    <td>1680 Nguyễn Văn Lượng</td>
+                                    <td>0903753468</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Nguyễn Văn C</td>
+                                    <td>1680 Nguyễn Văn Linh</td>
+                                    <td>0903753678</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>Nguyễn Hoàng D</td>
+                                    <td>1680 Nguyễn Văn Lượng</td>
+                                    <td>0903753468</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-success">Sửa</button>
+                        <button type="button" class="btn btn-primary">Thêm</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <script>
-        const addForm = document.getElementById('addAddressForm');
-        const updateForm = document.getElementById('updateAddressForm');
-
-        function showAddForm() {
-            addForm.classList.remove('d-none');
-            updateForm.classList.add('d-none');
-        }
-
-        async function editAddress(maDC) {
-            // Gọi API để lấy dữ liệu địa chỉ
-            const response = await fetch(`/customer/address/details/${maDC}`);
-            const address = await response.json();
-
-            if (address) {
-                // Điền dữ liệu vào form cập nhật
-                document.getElementById('updateMaDC').value = address.maDC;
-                document.getElementById('updateTenNN').value = address.tenNN;
-                document.getElementById('updateSdt').value = address.sdt;
-                document.getElementById('updateDiemGiao').value = address.diemGiao;
-                document.getElementById('updateMacDinh').checked = address.macDinh;
-
-                // Ẩn form thêm, hiện form sửa
-                addForm.classList.add('d-none');
-                updateForm.classList.remove('d-none');
-            }
-        }
-    </script>
     </article>
 </body>
 </html>
