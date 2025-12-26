@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{shared/layout :: view('customer', ~{::title}, ~{::article})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+   
+</head>
+
+<body>
+    <article>
+    	 <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fff;
+            /* Bỏ background hình ảnh, dùng nền trắng */
+            min-height: 100vh;
+        }
+
+        .logo img {
+            max-width: 200px;
+        }
+
+        /* Categories */
+        .categories {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 35px 25px 40px 25px;
+            border-radius: 16px;
+            margin-top: 30px;
+            box-shadow: 0 4px 24px rgba(67, 160, 71, 0.13), 0 0 0 4px #ffe06633;
+            border: 2px solid #ffe066;
+        }
+
+        .category-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 18px 0 0 0;
+            transition: transform 0.25s, box-shadow 0.25s;
+            border-radius: 12px;
+            background: transparent;
+            box-shadow: 0 2px 8px rgba(67, 160, 71, 0.07);
+            position: relative;
+        }
+
+        .category-item:hover {
+            transform: translateY(-8px) scale(1.10);
+            box-shadow: 0 8px 24px #ffe06655, 0 2px 8px rgba(67, 160, 71, 0.13);
+            background: #fffbe6;
+            z-index: 2;
+        }
+
+        .category-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 12px;
+            background: linear-gradient(135deg, #ffe066 60%, #43a047 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--pine-dark);
+            box-shadow: 0 4px 16px #ffe06655, 0 2px 8px rgba(67, 160, 71, 0.13);
+            border: 2px solid #ffd700;
+            transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+        }
+
+        .category-item:hover .category-icon {
+            background: linear-gradient(135deg, #ffd700 40%, #3bb143 100%);
+            color: #fff;
+            box-shadow: 0 8px 32px #43a04755;
+            border: 2px solid #43a047;
+        }
+
+        .category-name {
+            font-size: 15px;
+            color: var(--pine-green);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 2px;
+            text-shadow: 0 2px 8px #ffe06633;
+        }
+
+        /* Carousel */
+        .carousel-item img {
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(255, 224, 102, 0.12);
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: var(--pine-green);
+            border-radius: 50%;
+            padding: 20px;
+        }
+
+        /* Side Banners */
+        .side-banner {
+            background: linear-gradient(135deg, var(--pine-primary) 0%, var(--pine-green) 100%);
+            height: 145px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--pine-dark);
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 2px 12px rgba(255, 224, 102, 0.12);
+        }
+
+        /* Flash Sale */
+        .flash-sale {
+            background: rgba(255, 255, 255, 0.97);
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 12px rgba(255, 224, 102, 0.09);
+        }
+
+        .flash-title {
+            font-size: 18px;
+            color: var(--pine-green);
+            font-weight: bold;
+        }
+
+        .flash-timer {
+            background: var(--pine-dark);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid var(--pine-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(255, 224, 102, 0.08);
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 16px rgba(67, 160, 71, 0.13);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.07);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: var(--pine-green);
+            color: var(--pine-primary);
+            padding: 3px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(67, 160, 71, 0.08);
+        }
+
+        .product-info {
+            padding: 12px;
+        }
+
+        .product-name {
+            font-size: 15px;
+            color: var(--pine-dark);
+            height: 40px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .price-current {
+            color: var(--pine-green);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .price-discount {
+            background: var(--pine-primary);
+            color: var(--pine-dark);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .product-sold {
+            font-size: 12px;
+            color: var(--pine-dark);
+            margin-top: 8px;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 26px;
+            color: var(--pine-green);
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 32px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #ffe066;
+            display: inline-block;
+            padding-bottom: 6px;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(255, 255, 255, 0.97);
+            margin-top: 40px;
+            padding: 40px 0 20px;
+            border-top: 4px solid var(--pine-primary);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .footer h5 {
+            font-size: 14px;
+            color: var(--pine-dark);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .footer ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer li {
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: var(--pine-green);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .footer a:hover {
+            color: var(--pine-dark);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--pine-primary);
+            color: var(--pine-dark);
+            font-size: 12px;
+        }
+    </style>
+        <!-- Kết Thúc Navbar -->
+        <div class="container-fluid px-5">
+            <h2 style="position: relative;" class="m-3">Giỏ Hàng Của Bạn</h2>
+            <div class="card p-3 m-2">
+                <div class="row align-items-center">
+                    <div class="col-sm-6 d-flex align-items-center">
+                        <div class="form-check me-2">
+                            <input class="form-check-input" type="checkbox" id="sp1">
+                        </div>
+                        <p class="mb-0">Sản Phẩm</p>
+                    </div>
+                    <div class="col-sm-6 d-flex">
+                        <div class="col-sm-3 text-center">Đơn Giá</div>
+                        <div class="col-sm-3 text-center">Số Lượng</div>
+                        <div class="col-sm-3 text-center">Thành Tiền</div>
+                        <div class="col-sm-3 text-center">Thao Tác</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-3 m-2">
+                <div class="row align-items-center">
+                    <div class="col-sm-6 d-flex align-items-center">
+                        <div class="form-check me-2">
+                            <input class="form-check-input" type="checkbox" id="sp1">
+                        </div>
+                        <div><img th:src="@{/anh/chuot.png}" style="max-width: 75px;"></div>
+                        <p class="mb-0 ms-2">Chuột Gaming Siêu Cấp Vip Pro</p>
+                        <span class="ps-3 text-muted">Màu: Xanh Ngọc Bích</span>
+                    </div>
+                    <div class="col-sm-6 d-flex">
+                        <div class="col-sm-3 text-center">7000000₫</div>
+                        <div class="col-sm-3 text-center">
+                            <div class="input-group input-group-sm" style="width: 130px; margin: auto;">
+                                <button class="btn btn-outline-secondary px-3" type="button">-</button>
+                                <input class="form-control text-center" value="1">
+                                <button class="btn btn-outline-secondary px-3" type="button">+</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 text-center">7000000₫</div>
+                        <div class="col-sm-3 text-center">
+                            <button class="btn btn-danger">Bỏ Sản Phẩm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-3 m-2">
+                <div class="row align-items-center">
+                    <div class="col-sm-6 d-flex align-items-center">
+                        <div class="form-check me-2">
+                            <input class="form-check-input" type="checkbox" id="sp1">
+                        </div>
+                        <div><img th:src="@{/anh/banphimanh.png}"  style="max-width: 75px;"></div>
+                        <p class="mb-0 ms-2">Bàn Phím Văn Phòng Tổng Thống</p>
+                        <span class="ps-3 text-muted">Màu: Đỏ</span>
+                    </div>
+                    <div class="col-sm-6 d-flex">
+                        <div class="col-sm-3 text-center">99000000₫</div>
+                        <div class="col-sm-3 text-center">
+                            <div class="input-group input-group-sm" style="width: 130px; margin: auto;">
+                                <button class="btn btn-outline-secondary px-3" type="button">-</button>
+                                <input class="form-control text-center" value="1">
+                                <button class="btn btn-outline-secondary px-3" type="button">+</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 text-center">99000000₫</div>
+                        <div class="col-sm-3 text-center">
+                            <button class="btn btn-danger">Bỏ Sản Phẩm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-3 m-2">
+                <div class="row align-items-center">
+                    <div class="col-sm-6 d-flex align-items-center">
+                        <div class="form-check me-2">
+                            <input class="form-check-input" type="checkbox" id="sp1">
+                        </div>
+                        <div><img th:src="@{/anh/tham.png}"  style="max-width: 75px;"></div>
+                        <p class="mb-0 ms-2">Thảm Trải Sàn Lông</p>
+                        <span class="ps-3 text-muted">Màu: Đen Xám</span>
+                    </div>
+                    <div class="col-sm-6 d-flex">
+                        <div class="col-sm-3 text-center">36000000₫</div>
+                        <div class="col-sm-3 text-center">
+                            <div class="input-group input-group-sm" style="width: 130px; margin: auto;">
+                                <button class="btn btn-outline-secondary px-3" type="button">-</button>
+                                <input class="form-control text-center" value="1">
+                                <button class="btn btn-outline-secondary px-3" type="button">+</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 text-center">36000000₫</div>
+                        <div class="col-sm-3 text-center">
+                            <button class="btn btn-danger">Bỏ Sản Phẩm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card d-flex flex-row p-3 m-2 justify-content-between align-items-center">
+                <button class="btn btn-danger" id="all">Bỏ Sản Phẩm Đã Chọn</button>
+                <div class="d-flex flex-row align-items-center">
+                    <div class="me-3">
+                        <span>Tổng Cộng (0 Sản Phẩm): </span>
+                        <span class="fw-bold">0₫</span>
+                    </div>
+                    <!-- Sửa liên kết đặt hàng -->
+                    <a th:href="@{/customer/checkout}" class="btn btn-success">Đặt Hàng</a>
+                </div>
+            </div>
+        </div>
+    </article>
+
+</body>
+
+
+</html>

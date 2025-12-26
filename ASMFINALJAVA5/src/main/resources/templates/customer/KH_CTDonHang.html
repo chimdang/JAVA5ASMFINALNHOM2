@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{shared/layout :: view('customer', ~{::title}, ~{::article})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết đơn hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+
+<body class="bg-light">
+    <article>
+        <style>
+            #logo {
+                max-width: 200px
+            }
+
+            .dropdown:hover .dropdown-menu {
+                display: block;
+                margin-top: 0;
+            }
+
+            /* Riêng Tài khoản: ép căn phải */
+            #tk:hover .dropdown-menu {
+                right: 0;
+                left: auto;
+            }
+
+            .sticky-card {
+                position: fixed;
+                left: 50%;
+                right: 0;
+                bottom: 30px;
+                transform: translateX(-50%);
+                border-radius: 0;
+                width: 1246px;
+                margin: 0;
+            }
+
+            #all {
+                max-width: 200px;
+            }
+        </style>
+        <h2 class="m-3 text-center">Thông Tin Đơn Hàng</h2>
+        <div style="max-width: 500px;" class="mx-auto">
+            <div class="card p-3 m-2">
+                <div class="d-flex justify-content-center align-items-center my-1">
+                    <span><img th:src="@{/anh/chuot.png}" style="width: 400px;"></span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center my-1">
+                    <span>Chuột Gaming Siêu Cấp Vip Pro</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center my-1">
+                    <span class="text-muted">Màu: Xanh Ngọc Bích</span>
+                    <span class="text-muted">x1</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center my-1">
+                    <span>Đơn Giá:</span>
+                    <span class="text-muted">7000000đ</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center my-1">
+                    <span>Thành Tiền:</span>
+                    <span class="text-muted">7000000đ</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center my-1">
+                    <span>Địa Chỉ:</span>
+                    <span class="text-muted">0903753468, 1680 Nguyễn Văn Lượng, Nguyễn Văn A</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center my-1">
+                    <span>Mã Hóa Đơn:</span>
+                    <span class="text-muted">HD0001</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center my-1">
+                    <span>Ngày Mua:</span>
+                    <span class="text-muted">22/10/2025</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center my-1">
+                    <span>Trạng Thái:</span>
+                    <span class="text-success">Đã Nhận</span>
+                </div>
+            </div>
+        </div>
+    </article>
+
+</body>
+
+</html>

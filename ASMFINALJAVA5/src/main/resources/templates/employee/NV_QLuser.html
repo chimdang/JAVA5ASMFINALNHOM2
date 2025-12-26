@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{shared/layout :: view('employee', ~{::title}, ~{::article})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopee Admin - QLuser</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- jsPDF for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+</head>
+
+<body>
+    <article>
+		<style>
+    	.nav-tabs {
+		    border-bottom: 2px solid #dee2e6;
+		}
+		
+		.nav-tabs .nav-link {
+		    color: #666;
+		    font-weight: 500;
+		    border: none;
+		    border-bottom: 3px solid transparent;
+		    padding: 12px 24px;
+		    transition: all 0.3s;
+		}
+		
+		.nav-tabs .nav-link:hover {
+		    color: #4f46e5;
+		    border-color: transparent;
+		}
+		
+		.nav-tabs .nav-link.active {
+		    color: #4f46e5;
+		    background: transparent;
+		    border-color: #4f46e5;
+		}
+		
+		.tab-content {
+		    background: white;
+		    padding: 25px;
+		    border-radius: 0 0 12px 12px;
+		    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+		}
+		
+        /* Top Navbar */
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--shopee-primary), var(--shopee-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7f7f9;
+            /* nền trắng xám */
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+       
+        .page-container {
+		    padding: 30px;
+		    background: #f7f7f9;
+		    min-height: 100vh;
+		}
+        
+    </style>
+        <div class="page-container">
+
+            <!-- TAB -->
+            <div class="container mt-4">
+			    <ul class="nav nav-tabs mt-3" role="tablist">
+			        <li class="nav-item" role="presentation">
+			            <a class="nav-link active" data-bs-toggle="tab" href="#user-list" role="tab" aria-selected="true">
+			                <i class="bi bi-people-fill me-2"></i>Danh sách Users
+			            </a>
+			        </li>
+			        <li class="nav-item" role="presentation">
+			            <a class="nav-link" data-bs-toggle="tab" href="#user-edit" role="tab" aria-selected="false">
+			                <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa User
+			            </a>
+			        </li>
+                </ul>
+
+                <div class="tab-content p-3 border border-top-0">
+                    <!-- TAB USER LIST -->
+                    <div id="user-list" class="tab-pane fade show active">
+                        <form method="get" action="user" class="row g-2 mb-3">
+                            <div class="col-auto">
+                                <select name="roleFilter" class="form-select">
+                                    <option value="">All</option>
+                                    <option value="NV" ${param.roleFilter=='NV' ? 'selected' : '' }>Nhân viên</option>
+                                    <option value="KH" ${param.roleFilter=='KH' ? 'selected' : '' }>Khách hàng</option>
+                                </select>
+                            </div>
+
+                            <div class="col-auto">
+                                <input type="text" name="keyword" placeholder="Search..." value="" class="form-control">
+                            </div>
+
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-success">Tìm kiếm</button>
+                            </div>
+                        </form>
+
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Vai trò</th>
+                                    <th>Email</th>
+                                    <th>Tên</th>
+                                    <th>SĐT</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="badge bg-primary">Nhân viên</span></td>
+                                    <td>admin@gmail.com</td>
+                                    <td>Đồng Phan Phát Đạt</td>
+                                    <td>-</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary me-1" href="">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Delete user này?')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-success">Khách hàng</span></td>
+                                    <td>user1@gmail.com</td>
+                                    <td>Nguyễn Duy Nguyên Minh</td>
+                                    <td>0987654321</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary me-1" href="">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Delete user này?')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-success">Khách hàng</span></td>
+                                    <td>customer2@gmail.com</td>
+                                    <td>Đặng Trần Hoàng Anh</td>
+                                    <td>0901234567</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary me-1" href="">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Delete user này?')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <nav class="mt-2 d-flex justify-content-end">
+                            <ul class="pagination mb-0">
+                                <!-- First Page -->
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">
+                                        <i class="fa-solid fa-backward-step"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Previous Page -->
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">
+                                        <i class="fa-solid fa-backward"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Page Numbers -->
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#">5</a></li>
+
+                                <!-- Next Page -->
+                                <li class="page-item">
+                                    <a class="page-link" href="#">
+                                        <i class="fa-solid fa-forward"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Last Page -->
+                                <li class="page-item">
+                                    <a class="page-link" href="#">
+                                        <i class="fa-solid fa-forward-step"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
+
+                    </div>
+
+                    <!-- TAB USER EDIT -->
+                    <div id="user-edit" class="tab-pane fade">
+                        <form action="user/save" method="post" class="form-section bg-light p-3 rounded">
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Nhập email..."
+                                        value="">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Password</label>
+                                    <input type="password" name="password" class="form-control"
+                                        placeholder="Nhập mật khẩu..." value="">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Họ và tên</label>
+                                    <input type="text" name="fullname" class="form-control" placeholder="Nhập họ tên..."
+                                        value="">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Số điện thoại</label>
+                                    <input type="text" name="phone" class="form-control" placeholder="Nhập SĐT..."
+                                        value="">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Vai trò</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="role-nv" name="role" value="NV" class="form-check-input">
+                                    <label class="form-check-label" for="role-nv">Nhân viên</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="role-kh" name="role" value="KH" class="form-check-input">
+                                    <label class="form-check-label" for="role-kh">Khách hàng</label>
+                                </div>
+                            </div>
+
+                            <div class="text-end">
+                                <button formaction="#" class="btn btn-success">
+                                    <i class="fas fa-plus me-1"></i>Create
+                                </button>
+                                <button formaction="#" class="btn btn-warning">
+                                    <i class="fas fa-save me-1"></i>Update
+                                </button>
+                                <button formaction="#" class="btn btn-danger"
+                                    onclick="return confirm('Bạn có chắc muốn xóa user này?')">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </button>
+                                <button formaction="#" class="btn btn-secondary">
+                                    <i class="fas fa-redo me-1"></i>Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

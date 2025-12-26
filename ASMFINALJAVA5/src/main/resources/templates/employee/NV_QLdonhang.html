@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{shared/layout :: view('employee', ~{::title}, ~{::article})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản Lý Đơn Hàng</title>
+</head>
+<body>
+    <article>
+        <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7f7f9;
+            /* nền trắng xám */
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 0;
+        }
+
+        .nav-tabs .nav-link {
+            color: #666;
+            font-weight: 500;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 12px 24px;
+            transition: all 0.3s;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #ee4d2d;
+            border-color: transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #ee4d2d;
+            background: transparent;
+            border-color: #ee4d2d;
+        }
+
+        .tab-content {
+            background: white;
+            padding: 25px;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .order-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .order-card .d-flex {
+            margin: 8px 0;
+        }
+
+        .order-card span:first-child {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .order-card .text-muted {
+            color: #666 !important;
+        }
+
+        .order-card .text-warning {
+            color: #f59e0b !important;
+            font-weight: 600;
+        }
+
+        .order-card .text-success {
+            color: #10b981 !important;
+            font-weight: 600;
+        }
+
+        .order-card .text-danger {
+            color: #ef4444 !important;
+            font-weight: 600;
+        }
+
+        .order-card .btn {
+            margin: 5px;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .order-card .ms-auto {
+            margin-top: 15px;
+        }
+        .page-container {
+		    padding: 30px;
+		    background: #f7f7f9;
+		    min-height: 100vh;
+		}
+        
+
+        @media (max-width: 768px) {
+            .orders-container {
+                padding: 15px;
+            }
+
+            .order-card .d-flex {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <article>
+        <div class="page-container">
+            <ul class="nav nav-tabs" id="ordersTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="pending-tab" data-bs-toggle="tab" href="#pending" role="tab"
+                        aria-controls="pending" aria-selected="true">
+                        <i class="bi bi-clock-history me-2"></i>Chờ Duyệt
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="approved-tab" data-bs-toggle="tab" href="#approved" role="tab"
+                        aria-controls="approved" aria-selected="false">
+                        <i class="bi bi-check-circle me-2"></i>Đã Duyệt
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="rejected-tab" data-bs-toggle="tab" href="#rejected" role="tab"
+                        aria-controls="rejected" aria-selected="false">
+                        <i class="bi bi-x-circle me-2"></i>Đã Từ Chối
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="ordersTabContent">
+                <!-- Tab Chờ Duyệt -->
+                <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                    <div class="order-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Chuột Gaming Siêu Cấp Vip Pro</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Màu: Xanh Ngọc Bích</span>
+                            <span class="text-muted">x1</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Đơn Giá:</span>
+                            <span class="text-muted">7,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Thành Tiền:</span>
+                            <span class="text-muted">7,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>SĐT Khách Hàng:</span>
+                            <span class="text-muted">0903753468</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã Hóa Đơn:</span>
+                            <span class="text-muted">HD0001</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Ngày Mua:</span>
+                            <span class="text-muted">22/10/2025</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Trạng Thái:</span>
+                            <span class="text-warning">Chờ Duyệt</span>
+                        </div>
+                        <div class="ms-auto text-end">
+                            <button class="btn btn-danger">Từ Chối</button>
+                            <button class="btn btn-success">Duyệt Đơn</button>
+                        </div>
+                    </div>
+
+                    <div class="order-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Bàn Phím Văn Phòng Tổng Thống</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Màu: Đỏ</span>
+                            <span class="text-muted">x1</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Đơn Giá:</span>
+                            <span class="text-muted">99,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Thành Tiền:</span>
+                            <span class="text-muted">99,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>SĐT Khách Hàng:</span>
+                            <span class="text-muted">0908362942</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã Hóa Đơn:</span>
+                            <span class="text-muted">HD0002</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Ngày Mua:</span>
+                            <span class="text-muted">23/10/2025</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Trạng Thái:</span>
+                            <span class="text-warning">Chờ Duyệt</span>
+                        </div>
+                        <div class="ms-auto text-end">
+                            <button class="btn btn-danger">Từ Chối</button>
+                            <button class="btn btn-success">Duyệt Đơn</button>
+                        </div>
+                    </div>
+
+                    <div class="order-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Thảm Trải Sàn Lông Vũ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Màu: Đen Tuyền</span>
+                            <span class="text-muted">x1</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Đơn Giá:</span>
+                            <span class="text-muted">36,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Thành Tiền:</span>
+                            <span class="text-muted">36,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>SĐT Khách Hàng:</span>
+                            <span class="text-muted">0942768953</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã Hóa Đơn:</span>
+                            <span class="text-muted">HD0003</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Ngày Mua:</span>
+                            <span class="text-muted">24/10/2025</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Trạng Thái:</span>
+                            <span class="text-warning">Chờ Duyệt</span>
+                        </div>
+                        <div class="ms-auto text-end">
+                            <button class="btn btn-danger">Từ Chối</button>
+                            <button class="btn btn-success">Duyệt Đơn</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Đã Duyệt -->
+                <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+                    <div class="order-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Tai Nghe Gaming Pro Max</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Màu: Đen</span>
+                            <span class="text-muted">x1</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Đơn Giá:</span>
+                            <span class="text-muted">2,500,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Thành Tiền:</span>
+                            <span class="text-muted">2,500,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>SĐT Khách Hàng:</span>
+                            <span class="text-muted">0903753468</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã Hóa Đơn:</span>
+                            <span class="text-muted">HD0010</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Ngày Mua:</span>
+                            <span class="text-muted">20/10/2025</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã NV:</span>
+                            <span class="text-muted">NV0001</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Trạng Thái:</span>
+                            <span class="text-success">Đang Giao</span>
+                        </div>
+                    </div>
+
+                    <div class="order-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Laptop Gaming RTX 4090</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Màu: Xám</span>
+                            <span class="text-muted">x1</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Đơn Giá:</span>
+                            <span class="text-muted">45,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Thành Tiền:</span>
+                            <span class="text-muted">45,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>SĐT Khách Hàng:</span>
+                            <span class="text-muted">0908888888</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã Hóa Đơn:</span>
+                            <span class="text-muted">HD0011</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Ngày Mua:</span>
+                            <span class="text-muted">19/10/2025</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã NV:</span>
+                            <span class="text-muted">NV0002</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Trạng Thái:</span>
+                            <span class="text-success">Đang Giao</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Đã Từ Chối -->
+                <div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
+                    <div class="order-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Máy Tính Bảng iPad Pro</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Màu: Bạc</span>
+                            <span class="text-muted">x100</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Đơn Giá:</span>
+                            <span class="text-muted">25,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Thành Tiền:</span>
+                            <span class="text-muted">2,500,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>SĐT Khách Hàng:</span>
+                            <span class="text-muted">0999999999</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã Hóa Đơn:</span>
+                            <span class="text-muted">HD0020</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Ngày Mua:</span>
+                            <span class="text-muted">15/10/2025</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã NV:</span>
+                            <span class="text-muted">NV0001</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Trạng Thái:</span>
+                            <span class="text-danger">Đã Từ Chối</span>
+                        </div>
+                    </div>
+
+                    <div class="order-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Điện Thoại iPhone 15 Pro Max</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Màu: Titan Tự Nhiên</span>
+                            <span class="text-muted">x50</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Đơn Giá:</span>
+                            <span class="text-muted">35,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Thành Tiền:</span>
+                            <span class="text-muted">1,750,000,000đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>SĐT Khách Hàng:</span>
+                            <span class="text-muted">0911111111</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã Hóa Đơn:</span>
+                            <span class="text-muted">HD0021</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Ngày Mua:</span>
+                            <span class="text-muted">14/10/2025</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Mã NV:</span>
+                            <span class="text-muted">NV0003</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Trạng Thái:</span>
+                            <span class="text-danger">Đã Từ Chối</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

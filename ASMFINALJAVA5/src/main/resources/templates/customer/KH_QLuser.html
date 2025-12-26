@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{shared/layout :: view('customer', ~{::title}, ~{::article})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý hồ sơ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <article>
+    	<style>
+	        .address-card {
+	            border: 1px solid #ddd;
+	            border-radius: 10px;
+	            padding: 15px;
+	            margin-bottom: 15px;
+	            background-color: #fff;
+	            transition: 0.2s;
+	        }
+
+	        .address-card:hover {
+	            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+	        }
+
+	        .address-card.default {
+	            border: 2px solid #ff5722;
+	            background-color: #fff7f3;
+	        }
+
+	        .address-header {
+	            font-weight: bold;
+	            font-size: 1.1rem;
+	        }
+
+	        .badge-default {
+	            background-color: #fff;
+	            border: 1px solid #ff5722;
+	            color: #ff5722;
+	            font-size: 0.8rem;
+	            padding: 3px 6px;
+	            border-radius: 5px;
+	        }
+
+	        .card-header {
+	            font-weight: bold;
+	        }
+	        
+	        .h-80 {
+	            min-height: 400px;
+	        }
+	    </style>
+	    
+        <div class="container">
+            <!-- Thông báo -->
+            <div th:if="${message}" class="alert alert-success alert-dismissible fade show">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${message}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <h3 class="mb-4">👤 Quản lý hồ sơ</h3>
+
+            <div class="row align-items-stretch">
+                <!-- Thông tin cá nhân -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <i class="fa-solid fa-user me-2"></i>  Thông tin cá nhân
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/customer/update-profile}" method="post">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Họ và tên</label>
+                                    <input type="text" class="form-control" name="fullname" 
+                                           th:value="${customer.tenKH}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <input type="email" class="form-control" th:value="${session.userMail}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Số điện thoại</label>
+                                    <input type="text" class="form-control" name="phone" 
+                                           th:value="${customer.sdt}" required pattern="[0-9]{9,11}">
+                                </div>
+
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save me-1"></i> Lưu thay đổi
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Đổi mật khẩu -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm mb-4 ">
+                        <div class="card-header bg-success text-light">
+                            <i class="fas fa-key me-2"></i> Đổi mật khẩu
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/customer/change-password}" method="post">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Mật khẩu hiện tại</label>
+                                    <input type="password" class="form-control" name="currentPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Mật khẩu mới</label>
+                                    <input type="password" class="form-control" name="newPassword" 
+                                           required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Xác nhận mật khẩu mới</label>
+                                    <input type="password" class="form-control" name="confirmPassword" required>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary text-white">
+                                        <i class="fas fa-key me-1"></i> Đổi mật khẩu
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quản lý địa chỉ -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                    <span>📍 Quản lý địa chỉ nhận hàng</span>
+                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                        <i class="fas fa-plus me-1"></i> Thêm địa chỉ mới
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Địa chỉ mặc định -->
+                    <div class="address-card default" th:each="address : ${addresses}" 
+                         th:if="${address.macDinh}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="address-header">
+                                    <span th:text="${address.tenNN}"></span> 
+                                    <span class="text-muted" th:text="'| ' + ${address.sdt}"></span>
+                                </div>
+                                <div th:text="${address.diemGiao}"></div>
+                            </div>
+                            <div class="text-end">
+                                <button class="btn btn-sm btn-outline-danger me-2" disabled>
+                                    <i class="fas fa-check"></i> Mặc định
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editAddressModal"
+                                        th:onclick="|editAddress(|${address.maDC}|, '|${address.tenNN}|', '|${address.sdt}|', '|${address.diemGiao}|')|">
+                                    <i class="fas fa-edit"></i> Cập nhật
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Các địa chỉ khác -->
+                    <div class="address-card" th:each="address : ${addresses}" 
+                         th:unless="${address.macDinh}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="address-header">
+                                    <span th:text="${address.tenNN}"></span> 
+                                    <span class="text-muted" th:text="'| ' + ${address.sdt}"></span>
+                                </div>
+                                <div th:text="${address.diemGiao}"></div>
+                            </div>
+                            <div class="text-end">
+                                <form th:action="@{/customer/set-default-address}" method="post" style="display: inline;">
+                                    <input type="hidden" name="addressId" th:value="${address.maDC}">
+                                    <button type="submit" class="btn btn-sm btn-outline-success me-2">
+                                        <i class="fas fa-check"></i> Đặt mặc định
+                                    </button>
+                                </form>
+                                <button class="btn btn-sm btn-outline-primary me-2"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editAddressModal"
+                                        th:onclick="|editAddress(|${address.maDC}|, '|${address.tenNN}|', '|${address.sdt}|', '|${address.diemGiao}|')|">
+                                    <i class="fas fa-edit"></i> Cập nhật
+                                </button>
+                                <form th:action="@{/customer/delete-address}" method="post" style="display: inline;">
+                                    <input type="hidden" name="addressId" th:value="${address.maDC}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                            onclick="return confirm('Bạn có chắc muốn xóa địa chỉ này?')">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Thêm Địa Chỉ -->
+        <div class="modal fade" id="addAddressModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/customer/add-address}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thêm địa chỉ mới</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Họ và tên</label>
+                                <input type="text" class="form-control" placeholder="Họ và tên người nhận" name="tenNN" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control" name="sdt" placeholder="Nhập số điện thoại từ 9 đến 11 số" required pattern="[0-9]{9,11}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Địa chỉ</label>
+                                <textarea class="form-control" name="diemGiao" placeholder="Nhập địa chỉ nhận hàng" rows="3" required></textarea>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="macDinh" id="setDefault">
+                                <label class="form-check-label" for="setDefault">
+                                    Đặt làm địa chỉ mặc định
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Thêm địa chỉ</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Sửa Địa Chỉ -->
+        <div class="modal fade" id="editAddressModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/customer/update-address}" method="post">
+                        <input type="hidden" name="maDC" id="editAddressId">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Cập nhật địa chỉ</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Họ và tên người nhận</label>
+                                <input type="text" class="form-control" name="tenNN" id="editTenNN" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control" name="sdt" id="editSDT" required pattern="[0-9]{9,11}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Địa chỉ nhận hàng</label>
+                                <textarea class="form-control" name="diemGiao" id="editDiemGiao" rows="3" required></textarea>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="macDinh" id="editMacDinh">
+                                <label class="form-check-label" for="editMacDinh">
+                                    Đặt làm địa chỉ mặc định
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
